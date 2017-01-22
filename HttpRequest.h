@@ -22,8 +22,9 @@ public:
   std::string getPort();
   std::string getPath();
 private:
-  std::string m_Request;
+  std::string m_request;
   std::vector<std::string> m_header;
+  std::string m_method;
   std::string m_body;
   std::string m_protocol;
   std::string m_port;
