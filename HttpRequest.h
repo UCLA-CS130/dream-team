@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 
+// currently only method, request, protocol and path are set
+// class not needed for project 2
 class HttpRequest{
 public:
   HttpRequest(std::string request);
@@ -21,6 +23,7 @@ public:
   std::string getProtocol();
   std::string getPort();
   std::string getPath();
+  std::string getMethod();
 private:
   std::string m_request;
   std::vector<std::string> m_header;

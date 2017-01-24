@@ -48,3 +48,19 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
     throw;
   }
 }
+
+HttpRequest::getRequest(){
+  return m_request;
+}
+
+HttpRequest::getProtocol(){
+  return m_protocol;
+}
+
+HttpRequest::getMethod(){
+  return m_method;
+}
+
+HttpRequest::getPath(){
+  return m_path;
+}
