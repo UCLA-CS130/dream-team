@@ -6,7 +6,7 @@
 #include <iostream>
 #include "ConnectionManager.h"
 
-const std::string PROTOCOL_VERSION = "Http/1.1";
+const std::string PROTOCOL_VERSION = "HTTP/1.1";
 
 const std::string SUCCESS_MESSAGE = "OK";
 const unsigned SUCCESS = 200;
