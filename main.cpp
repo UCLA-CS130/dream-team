@@ -10,21 +10,21 @@ void runTcpServer(int port_number) {
 	boost::asio::ip::tcp::acceptor acceptor(aios, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number));
 
 	while (true) {
-    	boost::asio::ip::tcp::socket socket(aios);
-    	acceptor.accept(socket);
+		boost::asio::ip::tcp::socket socket(aios);
+		acceptor.accept(socket);
 
-    	std::stringstream message_stream;
-  		boost::asio::streambuf buffer;
-  		boost::system::error_code error;
-  		size_t len = read_until(socket, buffer, "\r\n\r\n", error);
-  	  
+		std::stringstream message_stream;
+		boost::asio::streambuf buffer;
+		boost::system::error_code error;
+		size_t len = read_until(socket, buffer, "\r\n\r\n", error);
+
   		// TODO: format the response with a status line, content-type, etc.
 
   		if (len) {
-	    	message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
+	   		message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
     		boost::asio::write(socket, boost::asio::buffer(message_stream.str()));
 		}
-    }
+	}
 }
 
 int main(int argc, char* argv[]) {
