@@ -9,14 +9,14 @@ HttpMessage::HttpMessage(std::string start_line) {
   start_line_ = start_line;
 }
 
-void HttpMessage::addHeader(std::string header) {
+void HttpMessage::AddHeader(std::string header) {
   headers_.push_back(header);
 }
 
-std::vector<std::string> HttpMessage::getHeaders() {
+std::vector<std::string> HttpMessage::GetHeaders() {
   return headers_;
 }
 
-std::string HttpMessage::getBody() {
+std::string HttpMessage::GetBody() {
   return body_;
 }

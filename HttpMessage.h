@@ -25,12 +25,13 @@ header fields, and possibly a message-body.
                         [ message-body ]
       start-line      = Request-Line | Status-Line
 */
+
 class HttpMessage {
 public:
   HttpMessage(std::string start_line);
-  void addHeader(std::string header);
-  std::vector<std::string> getHeaders();
-  std::string getBody();
+  void AddHeader(std::string header);
+  std::vector<std::string> GetHeaders();
+  std::string GetBody();
 private:
   std::string start_line_;
   std::string body_;

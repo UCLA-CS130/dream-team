@@ -5,3 +5,6 @@ CLASSES=*.cpp
 
 server: $CLASSES
 	$CC -o $@ $^ $FLAGS $@.cpp	
+
+clean: 
+	rm -rf *.o *~ *.gch *.swp *.dSYM *.tar.gz *\#
