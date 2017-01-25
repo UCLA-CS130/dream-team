@@ -2,12 +2,14 @@
 #include <string>
 #include <exception>
 #include <boost/asio.hpp>
-// #include "nginx-configparser/config_parser.h"
+
+#define REQUEST_DELIMITER "\r\n\r\n"
 
 // Inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void runTcpServer(int port_number) {
 	boost::asio::io_service aios;
-	boost::asio::ip::tcp::acceptor acceptor(aios, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number));
+	boost::asio::ip::tcp::acceptor acceptor(aios, 
+		boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number));
 
 	while (true) {
 		boost::asio::ip::tcp::socket socket(aios);
@@ -16,7 +18,7 @@ void runTcpServer(int port_number) {
 		std::stringstream message_stream;
 		boost::asio::streambuf buffer;
 		boost::system::error_code error;
-		size_t len = read_until(socket, buffer, "\r\n\r\n", error);
+		size_t len = read_until(socket, buffer, REQUEST_DELIMITER, error);
 
   		// TODO: format the response with a status line, content-type, etc.
 
