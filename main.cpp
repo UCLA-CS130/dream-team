@@ -24,7 +24,7 @@ void runTcpServer(int port_number) {
 
   		if (len) {
 	   		message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
-    		boost::asio::write(socket, boost::asio::buffer(message_stream.str()));
+			boost::asio::write(socket, boost::asio::buffer(message_stream.str()));
 		}
 	}
 }

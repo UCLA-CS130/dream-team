@@ -3,9 +3,9 @@ OPTIMIZE=-O2
 FLAGS=-g -Wall -pthread -std=c++11 -lboost_system
 CLASSES=*.cpp
 
-all: server
+all: webserver
 
-server: $(CLASSES)
+webserver: $(CLASSES)
 	$(CC) -o $@ $^ $(FLAGS)	
 
 clean: 
