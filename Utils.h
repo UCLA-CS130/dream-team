@@ -9,10 +9,10 @@
 #ifndef Utils_h
 #define Utils_h
 
-#include <stdio.h>
 #include <string>
 #include <vector>
 
-void tokenize(const std::string &in, std::vector<std::string> &tokens, const std::string delimeter = " ");
+void tokenize(const std::string &in, std::vector<std::string> &tokens, 
+	      const std::string &delimeter = " ");
 
 #endif /* Utils_h */

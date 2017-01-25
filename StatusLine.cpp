@@ -12,6 +12,10 @@ StatusLine::StatusLine(std::string protocol_version,
   reason_phrase_ = reason_phrase;
 }
 
+std::string StatusLine::Serialize() const {
+  return "";
+}
+
 std::string StatusLine::GetProtocolVersion() { return protocol_version_; }
 std::string StatusLine::GetReasonPhrase() { return reason_phrase_; }
 unsigned StatusLine::GetStatusCode() { return status_code_; }

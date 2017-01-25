@@ -7,13 +7,6 @@
 
 #include "HttpRequest.h"
 #include "Utils.h"
-std::string m_request;
-std::vector<std::string> m_header;
-std::string m_method;
-std::string m_body;
-std::string m_protocol;
-std::string m_port;
-std::string m_path;
 
 // only utilizes the status line of the HTTP request
 HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_method(""), m_body(""), m_protocol(""), m_port(0), m_path("") {
@@ -22,7 +15,7 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
   tokenize(rawMessage, tokens, "\r\n");
   
   // status line
-  std::string requestLine;
+  /*std::string requestLine;
   if (tokens.size() > 0) {
     requestLine = tokens[0];
   } else {
@@ -46,7 +39,7 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
     m_protocol = tokens[2];
   } else {
     throw;
-  }
+  }*/
 }
 
 std::string HttpRequest::getRequest(){
