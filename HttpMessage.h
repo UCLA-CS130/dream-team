@@ -26,16 +26,21 @@ header fields, and possibly a message-body.
       start-line      = Request-Line | Status-Line
 */
 
+const std::string HEADER_DELIMITER = "\r\n";
+const std::string REQUEST_DELIMITER = "\r\n\r\n";
+
 class HttpMessage {
 public:
   HttpMessage(std::string start_line);
+  virtual std::string Serialize();
   void AddHeader(std::string header);
+  void SetBody(std::string body);
   std::vector<std::string> GetHeaders();
   std::string GetBody();
 private:
   std::string start_line_;
   std::string body_;
-  std::vector<std::string> headers_;
+  std::vector<std::string> headers_;  
 };
 
 #endif
