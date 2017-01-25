@@ -48,5 +48,7 @@ void ConnectionManager::RunTcpServer() {
     response.AddHeader("Content-Type: text/plain");
     response.SetBody(resp_body);
     boost::asio::write(socket, boost::asio::buffer(response.Serialize()));
+
+    free(resp_status);
   }
 }

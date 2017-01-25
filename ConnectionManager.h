@@ -15,8 +15,6 @@ class ConnectionManager {
   ConnectionManager(unsigned port_number);
   void RunTcpServer();
  private:
-  void CreateBasicResponse(HttpResponse &res);
-  void CreateBadResponse(HttpResponse &res);
   unsigned port_number_;
 };
 
