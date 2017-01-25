@@ -1,10 +1,10 @@
 CC=g++
 OPTIMIZE=-O2
-FLAGS=-o -g -Wall -pthread -std=++11
+FLAGS=-g -Wall -pthread -std=c++11 -lboost_system
 CLASSES=*.cpp
 
-server: $CLASSES
-	$CC -o $@ $^ $FLAGS $@.cpp	
+server: $(CLASSES)
+	$(CC) -o $@ $^ $(FLAGS)	
 
 clean: 
 	rm -rf *.o *~ *.gch *.swp *.dSYM *.tar.gz *\#

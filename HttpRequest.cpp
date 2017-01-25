@@ -49,18 +49,18 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
   }
 }
 
-HttpRequest::getRequest(){
+std::string HttpRequest::getRequest(){
   return m_request;
 }
 
-HttpRequest::getProtocol(){
+std::string HttpRequest::getProtocol(){
   return m_protocol;
 }
 
-HttpRequest::getMethod(){
+std::string HttpRequest::getMethod(){
   return m_method;
 }
 
-HttpRequest::getPath(){
+std::string HttpRequest::getPath(){
   return m_path;
 }

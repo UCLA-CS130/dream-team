@@ -6,6 +6,5 @@
 #include "HttpResponse.h"
 
 HttpResponse::HttpResponse(const StatusLine &status) 
-  : HttpMessage(status.Serialize()) {
-  status_ = status;
+  : HttpMessage(status.Serialize()), status_(status) {
 }
