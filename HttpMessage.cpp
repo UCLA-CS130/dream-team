@@ -9,8 +9,23 @@ HttpMessage::HttpMessage(std::string start_line) {
   start_line_ = start_line;
 }
 
+std::string HttpMessage::Serialize() {
+  std::string serialized_output = start_line_;
+  for(unsigned i = 0; i < headers_.size(); i++) {
+    serialized_output += HEADER_DELIMITER + headers_[i];
+  }
+  
+  serialized_output += REQUEST_DELIMITER;
+  serialized_output += body_;
+  return serialized_output;
+}
+
 void HttpMessage::AddHeader(std::string header) {
   headers_.push_back(header);
+}
+
+void  HttpMessage::SetBody(std::string body) {
+  body_ = body;
 }
 
 std::vector<std::string> HttpMessage::GetHeaders() {

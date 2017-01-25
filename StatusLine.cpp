@@ -13,7 +13,8 @@ StatusLine::StatusLine(std::string protocol_version,
 }
 
 std::string StatusLine::Serialize() const {
-  return "";
+  std::string ser_status_code = std::to_string(status_code_);
+  return protocol_version_ + " " + ser_status_code + " " + reason_phrase_;
 }
 
 std::string StatusLine::GetProtocolVersion() { return protocol_version_; }

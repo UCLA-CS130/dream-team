@@ -9,4 +9,4 @@ webserver: $(CLASSES)
 	$(CC) -o $@ $^ $(FLAGS)	
 
 clean: 
-	rm -rf *.o *~ *.gch *.swp *.dSYM *.tar.gz *\#
+	rm -rf *.o *~ *.gch *.swp *.dSYM *.tar.gz *\# webserver
