@@ -15,7 +15,7 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
   tokenize(rawMessage, tokens, "\r\n");
   
   // status line
-  /*std::string requestLine;
+  std::string requestLine;
   if (tokens.size() > 0) {
     requestLine = tokens[0];
   } else {
@@ -39,7 +39,7 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
     m_protocol = tokens[2];
   } else {
     throw;
-  }*/
+  }
 }
 
 std::string HttpRequest::getRequest(){
