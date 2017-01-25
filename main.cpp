@@ -40,7 +40,6 @@ int main(int argc, char* argv[]) {
   NginxConfigParser config_parser;
   NginxConfig config;
   config_parser.Parse(argv[1], &config);
-  printf("%s", config.ToString().c_str());
   
   int port_number = NginxConfigGetPort(&config); // assign this value based on the config file
 
