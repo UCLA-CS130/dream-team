@@ -1,7 +1,7 @@
 CC=g++
 OPTIMIZE=-O2
 FLAGS=-g -Wall -pthread -std=c++11 -lboost_system
-CLASSES=*.cpp
+CLASSES=*.cpp nginx-configparser/config_parser.cc
 
 all: webserver
 
