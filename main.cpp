@@ -19,6 +19,9 @@ int main(int argc, char* argv[]) {
   config_parser.Parse(argv[1], &config);
   
   int port_number = NginxConfigGetPort(&config); // assign this value based on the config file
+  if(port_number == -1){
+    std::cerr << "port number not specified\n";
+  }
 
   try {
     ConnectionManager manager(port_number);
