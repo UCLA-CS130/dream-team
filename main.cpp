@@ -13,7 +13,6 @@ int main(int argc, char* argv[]) {
     std::cerr << "Usage: webserver <nginx_config_file>\n";
     return 1;
   }
-  
   NginxConfigParser config_parser;
   NginxConfig config;
   config_parser.Parse(argv[1], &config);
