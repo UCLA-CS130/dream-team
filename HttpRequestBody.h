@@ -12,9 +12,9 @@
 class HttpRequestBody{
 public:
   HttpRequestBody(std::string requestBody);
+  std::string getRequestBody();
 private:
   std::string m_requestBody;
-
 };
 
 #endif /* HttpRequestBody_h */

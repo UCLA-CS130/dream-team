@@ -8,6 +8,11 @@
 
 #include "HttpRequestBody.h"
 
-HttpRequestBody::HttpRequestBody(std::string requestBody){
+HttpRequestBody::HttpRequestBody(std::string requestBody)
+: m_requestBody = requestBody{
   
+}
+
+std::string getRequestBody(){
+  m_requestBody;
 }

@@ -9,12 +9,16 @@
 #ifndef HttpRequestHeader_h
 #define HttpRequestHeader_h
 #include "Utils.h"
+#include <string>
+#include <vector>
+#include <utility>
 
 class HttpRequestHeader{
 public:
-  std::vector<std::string> getRequestHeader();
+  HttpRequestHeader(std::vector<std::string> requestHeader);
+  std::string findHeader(std::string header); // returns "" if header is not found
 private:
-  std::vector<std::string> m_requestHeader;
+  std::vector<pair<std::string, std::string> > m_requestHeader;
 };
 
 #endif /* HttpRequestHeader_h */

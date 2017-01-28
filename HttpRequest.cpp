@@ -22,13 +22,13 @@ HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_meth
   }
   
   // Body stored in tokens[2]
-  HttpRequestLine m_requestLine(tokens[2]);
+  HttpRequestBody m_requestBody(tokens[2]);
   
   // Headers stored in tokens[1]
   std::string headers = tokens[1];
   tokens.clear();
   tokenize(headers, tokens);
-
+  getRequestHeader m_requestHeader(headers);
 }
 
 std::string HttpRequest::getRequest(){

@@ -14,8 +14,6 @@
 #include "HttpRequestHeader.h"
 #include "HttpRequestBody.h"
 
-// currently only method, request, protocol and path are set
-// class not needed for project 2
 class HttpRequest{
 public:
   HttpRequest(std::string request);
@@ -23,14 +21,12 @@ public:
   HttpRequestLine getRequestLine();
   HttpRequestHeader getRequestHeader();
   HttpRequestBody getRequestBody();
-  std::string getPort();
 
 private:
   std::string m_request;
   HttpRequestLine m_requestLine;
   HttpRequestHeader m_requestHeader;
   HttpRequestBody m_requestBody;
-  std::string m_port;
 };
 
 #endif /* HttpRequest_h */
