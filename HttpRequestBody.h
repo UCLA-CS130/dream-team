@@ -8,6 +8,7 @@
 
 #ifndef HttpRequestBody_h
 #define HttpRequestBody_h
+#include <string>
 
 class HttpRequestBody{
 public:

@@ -7,42 +7,41 @@
 
 
 // only utilizes the status line of the HTTP request
-HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_method(""), m_body(""), m_protocol(""), m_port(0), m_path("") {
+HttpRequest::HttpRequest(std::string rawMessage) {
   // set default values, if the constructor is not called
   std::vector<std::string> tokens;
   tokenize(rawMessage, tokens, "\r\n");
   
   // request/status line
-  std::string requestLine;
   if (tokens.size() > 0) {
     // tokens[0] is the request line
-    HttpRequestLine m_requestLine(tokens[0]);
+    m_requestLine = new HttpRequestLine(tokens[0]);
   } else {
     throw;
   }
   
   // Body stored in tokens[2]
-  HttpRequestBody m_requestBody(tokens[2]);
+  m_requestBody = new HttpRequestBody(tokens[2]);
   
   // Headers stored in tokens[1]
   std::string headers = tokens[1];
   tokens.clear();
   tokenize(headers, tokens);
-  getRequestHeader m_requestHeader(headers);
+  m_requestHeader = new HttpRequestHeader(tokens);
 }
 
 std::string HttpRequest::getRequest(){
   return m_request;
 }
 
-std::string HttpRequest::getProtocol(){
-  return m_protocol;
+HttpRequestLine* HttpRequest::getRequestLine(){
+  return m_requestLine;
 }
 
-std::string HttpRequest::getMethod(){
-  return m_method;
+HttpRequestHeader* HttpRequest::getRequestHeader(){
+  return m_requestHeader;
 }
 
-std::string HttpRequest::getPath(){
-  return m_path;
+HttpRequestBody* HttpRequest::getRequestBody(){
+  return m_requestBody;
 }

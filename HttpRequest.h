@@ -16,17 +16,17 @@
 
 class HttpRequest{
 public:
-  HttpRequest(std::string request);
+  HttpRequest(std::string rawMessage);
   std::string getRequest();
-  HttpRequestLine getRequestLine();
-  HttpRequestHeader getRequestHeader();
-  HttpRequestBody getRequestBody();
+  HttpRequestLine* getRequestLine();
+  HttpRequestHeader* getRequestHeader();
+  HttpRequestBody* getRequestBody();
 
 private:
   std::string m_request;
-  HttpRequestLine m_requestLine;
-  HttpRequestHeader m_requestHeader;
-  HttpRequestBody m_requestBody;
+  HttpRequestLine* m_requestLine;
+  HttpRequestHeader* m_requestHeader;
+  HttpRequestBody* m_requestBody;
 };
 
 #endif /* HttpRequest_h */

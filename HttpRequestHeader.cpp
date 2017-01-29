@@ -17,7 +17,7 @@ HttpRequestHeader::HttpRequestHeader(std::vector<std::string> requestHeader){
   }
 }
 
-HttpRequestHeader::findHeader(std::string header){
+std::string HttpRequestHeader::findHeader(std::string header){
   int length = m_requestHeader.size();
   for(int i = 0; i < length; i++){
     if(m_requestHeader[i].first == header)

@@ -18,6 +18,7 @@
 
 class HttpRequestLine{
 public:
+  HttpRequestLine(std::string requestLine);
   std::string getRequestLine();
   std::string getMethod();
   std::string getProtocol();
@@ -26,7 +27,7 @@ private:
   std::string m_requestLine;
   std::string m_method;
   std::string m_path;
-  std::string m_protocol
-}
+  std::string m_protocol;
+};
 
 #endif /* HttpRequestLine_h */

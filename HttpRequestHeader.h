@@ -18,7 +18,7 @@ public:
   HttpRequestHeader(std::vector<std::string> requestHeader);
   std::string findHeader(std::string header); // returns "" if header is not found
 private:
-  std::vector<pair<std::string, std::string> > m_requestHeader;
+  std::vector<std::pair<std::string, std::string> > m_requestHeader;
 };
 
 #endif /* HttpRequestHeader_h */

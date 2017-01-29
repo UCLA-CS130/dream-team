@@ -8,7 +8,8 @@
 
 #include "HttpRequestLine.h"
 
-HttpRequestLine::HttpRequestLine(std::string requestLine) : m_requestLine = requestLine{
+HttpRequestLine::HttpRequestLine(std::string requestLine){
+  m_requestLine = requestLine;
   std::vector<std::string> tokens;
   tokenize(requestLine, tokens);
   if (tokens.size() == 3) {
