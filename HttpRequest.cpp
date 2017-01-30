@@ -4,54 +4,44 @@
 //
 
 #include "HttpRequest.h"
-#include "Utils.h"
+
 
 // only utilizes the status line of the HTTP request
-HttpRequest::HttpRequest(std::string rawMessage) : m_request(rawMessage), m_method(""), m_body(""), m_protocol(""), m_port(0), m_path("") {
+HttpRequest::HttpRequest(std::string rawMessage) {
   // set default values, if the constructor is not called
   std::vector<std::string> tokens;
   tokenize(rawMessage, tokens, "\r\n");
   
-  // status line
-  std::string requestLine;
+  // request/status line
   if (tokens.size() > 0) {
-    requestLine = tokens[0];
+    // tokens[0] is the request line
+    m_requestLine = new HttpRequestLine(tokens[0]);
   } else {
     throw;
   }
+  
+  // Body stored in tokens[2]
+  m_requestBody = new HttpRequestBody(tokens[2]);
   
   // Headers stored in tokens[1]
-  // Body stored in tokens[2]
+  std::string headers = tokens[1];
   tokens.clear();
-  
-  tokenize(requestLine, tokens);
-  if (tokens.size() == 3) {
-    m_method = tokens[0];
-    std::string path = tokens[1];
-    if (path.length() > 0 && path[0] == '/') {   // check if the resource we are getting is properly formatted
-      m_path = path;
-    } else {
-      throw;
-    }
-    
-    m_protocol = tokens[2];
-  } else {
-    throw;
-  }
+  tokenize(headers, tokens);
+  m_requestHeader = new HttpRequestHeader(tokens);
 }
 
 std::string HttpRequest::getRequest(){
   return m_request;
 }
 
-std::string HttpRequest::getProtocol(){
-  return m_protocol;
+HttpRequestLine* HttpRequest::getRequestLine(){
+  return m_requestLine;
 }
 
-std::string HttpRequest::getMethod(){
-  return m_method;
+HttpRequestHeader* HttpRequest::getRequestHeader(){
+  return m_requestHeader;
 }
 
-std::string HttpRequest::getPath(){
-  return m_path;
+HttpRequestBody* HttpRequest::getRequestBody(){
+  return m_requestBody;
 }
