@@ -33,22 +33,22 @@ void ConnectionManager::RunTcpServer() {
     boost::system::error_code error;
     size_t len = read_until(socket, buffer, REQUEST_DELIMITER, error);
     
-    StatusLine *resp_status;
+    std::unique_ptr<StatusLine> resp_status;
     std::string resp_body = "";
 
     if (len) {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
       resp_body = message_stream.str();
-      resp_status = new StatusLine(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
+      resp_status.reset(new StatusLine(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE));
     } else {
-      resp_status = new StatusLine(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE);
+      resp_status.reset(new StatusLine(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE));
     }
+    
+    HttpHeader content_type("Content-Type", "text/plain");
 
     HttpResponse response(*resp_status);
-    response.AddHeader("Content-Type: text/plain");
+    response.AddHeader(content_type);
     response.SetBody(resp_body);
     boost::asio::write(socket, boost::asio::buffer(response.Serialize()));
-
-    free(resp_status);
   }
 }

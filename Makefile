@@ -1,12 +1,13 @@
-CC=g++
-OPTIMIZE=-O2
-FLAGS=-g -Wall -pthread -std=c++11 -lboost_system
+CC = g++
+OPTIMIZE = -O2
+FLAGS = -g -Wall -pthread -std=c++11 -lboost_system
+NGINX_DIR = src/nginx-configparser
 
-NGINX_DIR=src/nginx-configparser
-CLASSES=src/*.cpp $(NGINX_DIR)/config_parser.cc
+CLASSES = src/*.cpp
 
-TEST_FLAGS=-std=c++0x -isystem
-GTEST_DIR=$(NGINX_DIR)/googletest/googletest
+TEST_FLAGS = -std=c++0x -isystem
+GTEST_DIR = $(NGINX_DIR)/googletest/googletest
+TEST_CLASSES = src/HttpHeader.cpp
 
 all: webserver
 
@@ -16,12 +17,12 @@ unit-test: webserver
 	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -pthread -c $(GTEST_DIR)/src/gtest-all.cc
 	ar -rv build/libgtest.a gtest-all.o
 	rm gtest-all.o
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -pthread tests/HttpMessageTest.cpp src/HttpMessage.cpp $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -pthread tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
 integration-test: webserver
 	python integration_tests.py
 
-webserver: $(CLASSES)
+webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
 	$(CC) -o bin/$@ $^ $(FLAGS)	
 
 clean: 
