@@ -5,6 +5,9 @@ CLASSES=*.cpp nginx-configparser/config_parser.cc
 
 all: webserver
 
+test: webserver
+	python integration_tests.py
+
 webserver: $(CLASSES)
 	$(CC) -o $@ $^ $(FLAGS)	
 
