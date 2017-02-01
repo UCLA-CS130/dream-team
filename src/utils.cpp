@@ -6,7 +6,7 @@
 //  Copyright © 2017 Cho. All rights reserved.
 //
 
-#include "Utils.h"
+#include "utils.h"
 
 void tokenize(const std::string &in, std::vector<std::string> &tokens, 
 	      const std::string &delimeter) {

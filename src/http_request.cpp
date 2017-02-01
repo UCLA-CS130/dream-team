@@ -3,7 +3,7 @@
 //  Copyright © 2017 Cho. All rights reserved.
 //
 
-#include "HttpRequest.h"
+#include "http_request.h"
 
 
 // only utilizes the status line of the HTTP request

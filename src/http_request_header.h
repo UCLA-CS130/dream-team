@@ -8,10 +8,10 @@
 
 #ifndef HttpRequestHeader_h
 #define HttpRequestHeader_h
-#include "Utils.h"
 #include <string>
 #include <vector>
 #include <utility>
+#include "utils.h"
 
 class HttpRequestHeader{
 public:

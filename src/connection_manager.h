@@ -8,7 +8,7 @@
 
 #include <string>
 #include <boost/asio.hpp>
-#include "HttpResponse.h"
+#include "http_response.h"
 
 class ConnectionManager {
  public:

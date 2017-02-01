@@ -6,8 +6,8 @@
 #ifndef HttpResponse_h
 #define HttpResponse_h
 
-#include "HttpMessage.h"
-#include "StatusLine.h"
+#include "http_message.h"
+#include "status_line.h"
 
 class HttpResponse : public HttpMessage {
  public:
