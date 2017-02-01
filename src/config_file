@@ -1,4 +1,4 @@
 server {
-       port 65536;
+       listen  6673;
 }
 
