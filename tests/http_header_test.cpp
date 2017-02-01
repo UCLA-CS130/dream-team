@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "../src/HttpHeader.h"
+#include "../src/http_header.h"
 
-TEST(HttpMessageTest, HeaderSerialization) {
+TEST(HttpHeaderTest, HeaderSerialization) {
   const std::string content_type_ser = "Content-Type; text/plain";
   
   HttpHeader header("Content-Type", "text/plain");

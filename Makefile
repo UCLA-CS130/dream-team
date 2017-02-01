@@ -7,7 +7,8 @@ CLASSES = src/*.cpp
 
 TEST_FLAGS = -std=c++0x -isystem
 GTEST_DIR = $(NGINX_DIR)/googletest/googletest
-TEST_CLASSES = src/HttpHeader.cpp
+TEST_CLASSES = 	src/http_header.cpp \
+		src/http_message.cpp	
 
 all: webserver
 
