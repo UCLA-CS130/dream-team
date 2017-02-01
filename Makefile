@@ -32,7 +32,7 @@ unit-test-coverage: unit-test
 	gcov -o . -r $(TEST_CLASSES)
 
 integration-test: webserver
-	python integration_tests.py
+	python tests/integration_tests.py
 
 webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
 	$(CC) -o bin/$@ $^ $(FLAGS)	

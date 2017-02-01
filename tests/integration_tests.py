@@ -34,7 +34,7 @@ def check_status_line(response):
 
 def check_resp_headers(response):
     r_headers = response.getheaders()
-    expected_headers = [('content-type', 'text/plain')] # change to Content-Type (this way just to test passing of test)
+    expected_headers = [('Content-Type', 'text/plain')]
     return r_headers == expected_headers
 
 def check_resp_body(response, request_type, request_resource):
@@ -50,10 +50,12 @@ def is_echo_valid(response, request_type, request_resource):
 def main():
     port_number = '2001'
     test_fname = 'integration_test_config'
-    
-    create_test_config(port_number, test_fname)
+    path_to_bin = os.getcwd() + '/bin'
+    path_to_config_file = path_to_bin + '/' + test_fname
 
-    running_server = subprocess.Popen(['./webserver', test_fname])
+    create_test_config(port_number, path_to_config_file)
+
+    running_server = subprocess.Popen(['./webserver', test_fname], cwd=path_to_bin)
 
     # Add a short delay to make sure the server is listening before the request is sent
     time.sleep(1)
@@ -76,7 +78,7 @@ def main():
         print err.reason
         sys.exit(1)
     finally:
-        os.remove(test_fname)
+        os.remove(path_to_config_file)
         running_server.kill()
 
 if __name__ == "__main__":
