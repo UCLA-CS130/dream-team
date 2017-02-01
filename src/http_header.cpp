@@ -9,5 +9,5 @@ HttpHeader::HttpHeader(std::string key, std::string value)
   : key_(key), value_(value) {}
 
 std::string HttpHeader::Serialize() {
-  return key_ + "; " + value_;
+  return key_ + ": " + value_;
 }

@@ -3,8 +3,8 @@
 
 TEST(HttpMessageTest, MessageSerialization) {
   const std::string start_line = "random first line";
-  const std::string header1 = "key; value";
-  const std::string header2 = "key2; value2";
+  const std::string header1 = "key: value";
+  const std::string header2 = "key2: value2";
   const std::string body = "this is a random body that should stay the same";
   const std::string delim = "\r\n";
   const std::string ser_message = 

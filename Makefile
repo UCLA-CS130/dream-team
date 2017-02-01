@@ -38,5 +38,6 @@ webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
 	$(CC) -o bin/$@ $^ $(FLAGS)	
 
 clean: 
-	rm -rf *.o *.a *.gcov *.gcda *.gcno bin/webserver
-	rm -rf ./build/*
+	rm -rf *.o *.a *.gcov *.gcda *.gcno
+	rm -rf build/*
+	rm -rf bin/*
