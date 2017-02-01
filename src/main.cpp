@@ -2,8 +2,8 @@
 #include <string>
 #include <exception>
 #include <boost/asio.hpp>
-#include "ConnectionManager.h"
-#include "Utils.h"
+#include "connection_manager.h"
+#include "utils.h"
 
 int NginxConfigGetPort(NginxConfig* config);
 

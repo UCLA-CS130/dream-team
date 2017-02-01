@@ -3,7 +3,7 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#include "HttpMessage.h"
+#include "http_message.h"
 
 HttpMessage::HttpMessage(std::string start_line) {
   start_line_ = start_line;
@@ -24,7 +24,7 @@ void HttpMessage::AddHeader(HttpHeader header) {
   headers_.push_back(header);
 }
 
-void  HttpMessage::SetBody(std::string body) {
+void HttpMessage::SetBody(std::string body) {
   body_ = body;
 }
 

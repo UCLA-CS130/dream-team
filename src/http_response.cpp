@@ -3,7 +3,7 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#include "HttpResponse.h"
+#include "http_response.h"
 
 HttpResponse::HttpResponse(const StatusLine &status) 
   : HttpMessage(status.Serialize()), status_(status) {

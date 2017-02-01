@@ -3,7 +3,7 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#include "StatusLine.h"
+#include "status_line.h"
 
 StatusLine::StatusLine(std::string protocol_version, 
 		       unsigned status_code, std::string reason_phrase) {

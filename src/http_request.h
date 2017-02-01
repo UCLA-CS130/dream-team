@@ -9,10 +9,10 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "Utils.h"
-#include "HttpRequestLine.h"
-#include "HttpRequestHeader.h"
-#include "HttpRequestBody.h"
+#include "utils.h"
+#include "http_request_line.h"
+#include "http_request_header.h"
+#include "http_request_body.h"
 
 class HttpRequest{
 public:

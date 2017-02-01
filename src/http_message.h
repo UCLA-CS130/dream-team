@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include "HttpHeader.h"
+#include "http_header.h"
 
 /*
 From Apache HttpComponents:
