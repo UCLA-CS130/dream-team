@@ -6,7 +6,7 @@
 //
 //
 
-#include "HttpRequestBody.h"
+#include "http_request_body.h"
 
 HttpRequestBody::HttpRequestBody(std::string requestBody){
   m_requestBody = requestBody;

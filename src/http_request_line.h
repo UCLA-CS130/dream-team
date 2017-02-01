@@ -8,10 +8,10 @@
 
 #ifndef HttpRequestLine_h
 #define HttpRequestLine_h
-#include "Utils.h"
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include "utils.h"
 
 #define GET "GET"
 #define POST "POST"

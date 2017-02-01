@@ -49,4 +49,6 @@ flycheck_*.el
 
 # End of https://www.gitignore.io/api/emacs
 
-webserver
+*.gcov
+*.gcda
+*.gcno
