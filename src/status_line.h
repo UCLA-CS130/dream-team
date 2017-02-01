@@ -13,9 +13,6 @@ class StatusLine {
   StatusLine(std::string protocol_version, 
 	     unsigned status_code, std::string reason_phrase);
   std::string Serialize() const;
-  std::string GetProtocolVersion();
-  std::string GetReasonPhrase();
-  unsigned GetStatusCode();
  private:
   std::string protocol_version_;
   std::string reason_phrase_;

@@ -22,4 +22,5 @@ TEST(HttpMessageTest, MessageSerialization) {
   message.SetBody(body);
   
   EXPECT_EQ(ser_message, message.Serialize());
+  EXPECT_EQ(body, message.GetBody());
 }
