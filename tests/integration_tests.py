@@ -34,7 +34,7 @@ def check_status_line(response):
 
 def check_resp_headers(response):
     r_headers = response.getheaders()
-    expected_headers = [('Content-Type', 'text/plain')]
+    expected_headers = [('content-type', 'text/plain')]
     return r_headers == expected_headers
 
 def check_resp_body(response, request_type, request_resource):
@@ -70,6 +70,7 @@ def main():
 
     try:
         response = send_request(port_number, request_type, request_resource)
+        
         if is_echo_valid(response, request_type, request_resource):
             sys.exit(0)
         else:
