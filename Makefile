@@ -7,11 +7,12 @@ CLASSES = src/*.cpp
 TEST_FLAGS = -std=c++0x -isystem
 GTEST_DIR = $(NGINX_DIR)/googletest/googletest
 TEST_ARGS = -pthread
-TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 TEST_CLASSES = 	src/http_header.cpp \
 		src/http_message.cpp \
 		src/http_response.cpp \
 		src/status_line.cpp
+
+TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
 all: webserver
 
@@ -28,6 +29,7 @@ gunit:
 
 unit-test-coverage: TEST_ARGS += -fprofile-arcs -ftest-coverage
 unit-test-coverage: unit-test
+	gcov -o . -r $(TEST_CLASSES)
 
 integration-test: webserver
 	python integration_tests.py
