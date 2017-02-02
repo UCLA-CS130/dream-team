@@ -17,7 +17,6 @@
 class HttpRequest : public HttpMessage {
 public:
   HttpRequest(const HttpRequestLine &request);
-  HttpRequestLine getRequestLine();
 private:
   const HttpRequestLine &m_request;
 };
