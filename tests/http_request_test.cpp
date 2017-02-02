@@ -13,13 +13,12 @@ TEST(HttpRequestTest, RequestSerialization){
   const std::string method = "GET";
   const std::string uri = "/fakePath/index.php";
   const std::string version = "HTTP/1.1";
-  const std::string expectedSerialize = "GET /fakePath/index.php HTTP/1.1";
-  
+
+  const std::string req_line = method + " " + uri + " " + version;
+  const std::string ser_req = req_line + "\r\n\r\n";
+
   HttpRequestLine requestLine(method, uri, version);
   HttpRequest request(requestLine);
   
-  EXPECT_EQ(request.getRequestLine().Serialize(), expectedSerialize);
-  EXPECT_EQ(method, request.getRequestLine().getMethod());
-  EXPECT_EQ(uri, request.getRequestLine().getUri());
-  EXPECT_EQ(version, request.getRequestLine().getProtocolVersion());
+  EXPECT_EQ(request.Serialize(), ser_req);
 }
