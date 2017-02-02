@@ -6,13 +6,14 @@ CLASSES = src/*.cpp
 
 TEST_FLAGS = -std=c++0x -isystem
 GTEST_DIR = $(NGINX_DIR)/googletest/googletest
-TEST_ARGS = -pthread
+TEST_ARGS = -pthread -lboost_system
 TEST_CLASSES = 	src/http_header.cpp \
 		src/http_message.cpp \
 		src/http_response.cpp \
 		src/status_line.cpp \
 		src/http_request.cpp \
-		src/http_request_line.cpp
+		src/http_request_line.cpp \
+		src/connection_manager.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
@@ -21,11 +22,11 @@ all: webserver
 test: unit-test integration-test
 
 unit-test: gunit webserver	
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include $(TEST_ARGS) $(TEST_IO)
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include $(TEST_IO) $(TEST_ARGS)
 	./bin/$@
 
 gunit:
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -pthread -c $(GTEST_DIR)/src/gtest-all.cc
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -c $(GTEST_DIR)/src/gtest-all.cc $(TEST_ARGS)
 	ar -rv build/libgtest.a gtest-all.o
 	rm gtest-all.o
 
