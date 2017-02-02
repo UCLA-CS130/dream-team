@@ -59,7 +59,6 @@ HttpResponse ConnectionManager::ProcessBadRequest(std::string raw_request) {
      
   HttpResponse err_resp(err_line);
   AttachDefaultContentTypeHeader(err_resp);
-  err_resp.SetBody(raw_request);
   return err_resp;
 }
 

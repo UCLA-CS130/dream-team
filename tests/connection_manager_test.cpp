@@ -7,7 +7,7 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
 
   const std::string expected_resp = 
     "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + valid_get_req;
-  
+
   const unsigned random_port = 10;
   ConnectionManager manager(random_port);
 
@@ -16,5 +16,14 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
 }
 
 TEST(ConnectionManagerTest, InvalidGetRequest) {
+  const std::string bad_req = "asdfas";
+  
+  const std::string expected_resp =
+    "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n";
 
+  const unsigned random_port = 10;
+  ConnectionManager manager(random_port);
+
+  HttpResponse resp = manager.ProcessBadRequest(bad_req);
+  EXPECT_EQ(resp.Serialize(), expected_resp);
 }
