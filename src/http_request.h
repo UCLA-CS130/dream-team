@@ -5,6 +5,7 @@
 
 #ifndef HttpRequest_h
 #define HttpRequest_h
+
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -13,8 +14,7 @@
 #include "http_message.h"
 #include "http_request_line.h"
 
-
-class HttpRequest : public HttpMessage{
+class HttpRequest : public HttpMessage {
 public:
   HttpRequest(const HttpRequestLine &request);
   HttpRequestLine getRequestLine();

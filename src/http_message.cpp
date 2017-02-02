@@ -9,7 +9,7 @@ HttpMessage::HttpMessage(std::string start_line) {
   start_line_ = start_line;
 }
 
-std::string HttpMessage::Serialize() {
+std::string HttpMessage::Serialize() const {
   std::string serialized_output = start_line_;
   for(unsigned i = 0; i < headers_.size(); i++) {
     serialized_output += HEADER_DELIMITER + headers_[i].Serialize();

@@ -31,24 +31,42 @@ void ConnectionManager::RunTcpServer() {
     std::stringstream message_stream;
     boost::asio::streambuf buffer;
     boost::system::error_code error;
-    size_t len = read_until(socket, buffer, REQUEST_DELIMITER, error);
-    
-    std::unique_ptr<StatusLine> resp_status;
-    std::string resp_body = "";
+    size_t len = read_until(socket, buffer, REQUEST_DELIMITER, error);      
 
     if (len) {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
-      resp_body = message_stream.str();
-      resp_status.reset(new StatusLine(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE));
-    } else {
-      resp_status.reset(new StatusLine(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE));
-    }
-    
-    HttpHeader content_type("Content-Type", "text/plain");
 
-    HttpResponse response(*resp_status);
-    response.AddHeader(content_type);
-    response.SetBody(resp_body);
-    boost::asio::write(socket, boost::asio::buffer(response.Serialize()));
+      HttpResponse resp = ProcessGetRequest(message_stream.str());
+      StreamHttpResponse(socket, resp);
+    } else {
+      HttpResponse resp = ProcessBadRequest("");
+      StreamHttpResponse(socket, resp);
+    }
   }
+}
+
+HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
+  StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
+  
+  HttpResponse response(status);
+  AttachDefaultContentTypeHeader(response);
+  response.SetBody(raw_request);
+  return response;
+}
+
+HttpResponse ConnectionManager::ProcessBadRequest(std::string raw_request) {
+  StatusLine err_line(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE);
+     
+  HttpResponse err_resp(err_line);
+  AttachDefaultContentTypeHeader(err_resp);
+  return err_resp;
+}
+
+void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse &resp) {
+  HttpHeader content_type("Content-Type", "text/plain");
+  resp.AddHeader(content_type);
+}
+
+void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp) {
+  boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
 }

@@ -8,6 +8,6 @@
 HttpHeader::HttpHeader(std::string key, std::string value) 
   : key_(key), value_(value) {}
 
-std::string HttpHeader::Serialize() {
+std::string HttpHeader::Serialize() const {
   return key_ + ": " + value_;
 }

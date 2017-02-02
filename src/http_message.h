@@ -33,7 +33,7 @@ const std::string REQUEST_DELIMITER = "\r\n\r\n";
 class HttpMessage {
 public:
   HttpMessage(std::string start_line);
-  virtual std::string Serialize();
+  virtual std::string Serialize() const;
   void AddHeader(HttpHeader header);
   void SetBody(std::string body);
   std::string GetBody();

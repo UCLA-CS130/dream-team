@@ -14,7 +14,11 @@ class ConnectionManager {
  public:
   ConnectionManager(unsigned port_number);
   void RunTcpServer();
+  HttpResponse ProcessGetRequest(std::string raw_request);
+  HttpResponse ProcessBadRequest(std::string raw_request);
  private:
+  void AttachDefaultContentTypeHeader(HttpResponse &resp);
+  void StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp);
   unsigned port_number_;
 };
 
