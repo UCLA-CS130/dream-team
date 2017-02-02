@@ -10,23 +10,16 @@
 #include <iostream>
 #include <vector>
 #include "utils.h"
+#include "http_message.h"
 #include "http_request_line.h"
-#include "http_request_header.h"
-#include "http_request_body.h"
 
-class HttpRequest{
+
+class HttpRequest : public HttpMessage{
 public:
-  HttpRequest(std::string rawMessage);
-  std::string getRequest();
-  HttpRequestLine* getRequestLine();
-  HttpRequestHeader* getRequestHeader();
-  HttpRequestBody* getRequestBody();
-
+  HttpRequest(const HttpRequestLine &request);
+  HttpRequestLine getRequestLine();
 private:
-  std::string m_request;
-  HttpRequestLine* m_requestLine;
-  HttpRequestHeader* m_requestHeader;
-  HttpRequestBody* m_requestBody;
+  const HttpRequestLine &m_request;
 };
 
 #endif /* HttpRequest_h */
