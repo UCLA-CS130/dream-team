@@ -13,7 +13,9 @@ TEST_CLASSES = 	src/http_header.cpp \
 		src/status_line.cpp \
 		src/http_request.cpp \
 		src/http_request_line.cpp \
-		src/connection_manager.cpp
+		src/connection_manager.cpp \
+                src/utils.cpp \
+		$(NGINX_DIR)/config_parser.cc
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
