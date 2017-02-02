@@ -4,7 +4,6 @@
 #include "../src/utils.h"
 
 // From Assignment 1
-
 class UtilsGetPortTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
