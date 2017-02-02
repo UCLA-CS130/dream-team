@@ -20,13 +20,13 @@ class HttpRequestLine{
 public:
   HttpRequestLine(std::string method, std::string uri, std::string version);
   std::string getMethod();
-  std::string getProtocolVersion();
   std::string getUri();
+  std::string getProtocolVersion();
   std::string Serialize() const;
 private:
   std::string m_method;
-  std::string m_version;
   std::string m_uri;
+  std::string m_version;
 };
 
 #endif /* HttpRequestLine_h */
