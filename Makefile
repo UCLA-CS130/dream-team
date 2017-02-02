@@ -10,7 +10,9 @@ TEST_ARGS = -pthread
 TEST_CLASSES = 	src/http_header.cpp \
 		src/http_message.cpp \
 		src/http_response.cpp \
-		src/status_line.cpp
+		src/status_line.cpp \
+		src/http_request.cpp \
+		src/http_request_line.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
