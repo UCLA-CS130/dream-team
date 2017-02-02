@@ -8,7 +8,3 @@
 HttpRequest::HttpRequest(const HttpRequestLine &request)
   : HttpMessage(request.Serialize()), m_request(request) {
 }
-
-HttpRequestLine HttpRequest::getRequestLine() {
-  return m_request;
-}

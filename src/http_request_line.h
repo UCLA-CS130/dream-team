@@ -8,6 +8,7 @@
 
 #ifndef HttpRequestLine_h
 #define HttpRequestLine_h
+
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -16,17 +17,17 @@
 #define GET "GET"
 #define POST "POST"
 
-class HttpRequestLine{
+class HttpRequestLine {
 public:
   HttpRequestLine(std::string method, std::string uri, std::string version);
-  std::string getMethod();
-  std::string getUri();
-  std::string getProtocolVersion();
+  std::string GetMethod();
+  std::string GetUri();
+  std::string GetProtocolVersion();
   std::string Serialize() const;
 private:
-  std::string m_method;
-  std::string m_uri;
-  std::string m_version;
+  std::string method_;
+  std::string uri_;
+  std::string version_;
 };
 
 #endif /* HttpRequestLine_h */
