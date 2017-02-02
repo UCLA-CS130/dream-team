@@ -8,21 +8,24 @@
 
 #include "http_request_line.h"
 
-HttpRequestLine::HttpRequestLine(std::string requestLine){
-  m_requestLine = requestLine;
-  std::vector<std::string> tokens;
-  tokenize(requestLine, tokens);
-  if (tokens.size() == 3) {
-    m_method = tokens[0];
-    std::string path = tokens[1];
-    if (path.length() > 0 && path[0] == '/') {   // check if the resource we are getting is properly formatted
-      m_path = path;
-    } else {
-      throw;
-    }
-    
-    m_protocol = tokens[2];
-  } else {
-    throw;
-  }
+HttpRequestLine::HttpRequestLine(std::string method, std::string uri, std::string version) {
+  m_method = method;
+  m_uri = uri;
+  m_version = version;
+}
+
+std::string HttpRequestLine::getMethod(){
+  return m_method;
+}
+
+std::string HttpRequestLine::getProtocolVersion(){
+  return m_version;
+}
+
+std::string HttpRequestLine::getUri(){
+  return m_uri;
+}
+
+std::string HttpRequestLine::Serialize() const{
+  return m_method + " "  + m_uri + " " + m_version;
 }

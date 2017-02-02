@@ -18,16 +18,15 @@
 
 class HttpRequestLine{
 public:
-  HttpRequestLine(std::string requestLine);
-  std::string getRequestLine();
+  HttpRequestLine(std::string method, std::string uri, std::string version);
   std::string getMethod();
-  std::string getProtocol();
-  std::string getPath();
+  std::string getProtocolVersion();
+  std::string getUri();
+  std::string Serialize() const;
 private:
-  std::string m_requestLine;
   std::string m_method;
-  std::string m_path;
-  std::string m_protocol;
+  std::string m_version;
+  std::string m_uri;
 };
 
 #endif /* HttpRequestLine_h */
