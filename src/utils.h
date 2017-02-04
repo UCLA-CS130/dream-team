@@ -17,5 +17,8 @@
 int NginxConfigGetPort(NginxConfig* config);
 // helper function to get port number from config file
 int configStatmentRecur(NginxConfigStatement* statement);
+// parses a string by delimeter
+void tokenize(const std::string &in, std::vector<std::string> &tokens,
+              const std::string &delimeter = " ");
 
 #endif /* Utils_h */

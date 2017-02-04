@@ -39,8 +39,9 @@ void ConnectionManager::RunTcpServer() {
       string raw_request = message_stream.str();
       HttpRequest req = ProcessGetRequest(message_stream.str());
       
-      // use request to create response object
+      // use req to create response object
       // use StreamHttpResponse to send response object back to client
+      HttpResponse resp = ProcessBadRequest("");
       StreamHttpResponse(socket, resp);
     } else {
       HttpResponse resp = ProcessBadRequest("");
@@ -49,16 +50,46 @@ void ConnectionManager::RunTcpServer() {
   }
 }
 
-HttpRequest ConnectionManager::ProcessGetRequest(std::string raw_request) {
-  // use Parser on facebook and tokenize from previous commits
-  // create HttpRequest_line here using parsed inputs
-  // create HttpRequest here
+
+HttpRequest ConnectionManager::ProcessGetRequest(const std::string raw_request) {
+  std::string method, uri, version;
+  std::vector<string> tokens;
+  std::vector<string> request_line_tokens;
+  string request_line;
   
-  // HttpRequestLine request_line(method, uri, version);
+  tokenize(rawMessage, tokens, "\r\n");
   
-  // HttpRequest request(request_line);
-  // request.AddHeader(HttpHeader header);
-  // request.SetBody(std::string body);
+  if (tokens.size() > 0) {
+    request_line = tokens[0];
+  } else {
+    throw ResponseException(400);
+  }
+  
+  tokenize(request_line, request_line_tokens);
+  if (request_line_tokens.size() == 3) {
+    method = request_line_tokens[0];
+    uri = request_line_tokens[1];
+    version = request_line_tokens[2];
+  } else {
+    throw ResponseException(400);
+  }
+  
+  HttpRequestLine request_line(method, uri, version);
+  HttpRequest request(request_line);
+  
+  for(int i = 1; i < tokens.size(); i++){
+    if(tokens[i] == ""){
+      if(i < tokens.size() - 1)
+        request.SetBody(tokens[tokens.size() - 1]);
+      break;
+    }
+    vector<std::string> keyValue;
+    tokenize(tokens[i], keyValue, ": ");
+    if(keyValue.size() == 2){
+      HttpHeader http_header(keyValue[0], keyValue[1]);
+      request.AddHeader(http_header);
+    }
+  }
   
   return request;
 }
