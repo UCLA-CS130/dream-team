@@ -40,7 +40,7 @@ public:
 private:
   std::string start_line_;
   std::string body_;
-  std::vector<HttpHeader> headers_;  
+  std::vector<HttpHeader> headers_;
 };
 
 #endif

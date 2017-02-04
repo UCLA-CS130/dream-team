@@ -18,7 +18,7 @@ ConnectionManager::ConnectionManager(unsigned port_number) {
   port_number_ = port_number;
 }
 
-// Inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
+// Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
@@ -35,8 +35,12 @@ void ConnectionManager::RunTcpServer() {
 
     if (len) {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
-
-      HttpResponse resp = ProcessGetRequest(message_stream.str());
+      
+      string raw_request = message_stream.str();
+      HttpRequest req = ProcessGetRequest(message_stream.str());
+      
+      // use request to create response object
+      // use StreamHttpResponse to send response object back to client
       StreamHttpResponse(socket, resp);
     } else {
       HttpResponse resp = ProcessBadRequest("");
@@ -45,13 +49,18 @@ void ConnectionManager::RunTcpServer() {
   }
 }
 
-HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
-  StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
+HttpRequest ConnectionManager::ProcessGetRequest(std::string raw_request) {
+  // use Parser on facebook and tokenize from previous commits
+  // create HttpRequest_line here using parsed inputs
+  // create HttpRequest here
   
-  HttpResponse response(status);
-  AttachDefaultContentTypeHeader(response);
-  response.SetBody(raw_request);
-  return response;
+  // HttpRequestLine request_line(method, uri, version);
+  
+  // HttpRequest request(request_line);
+  // request.AddHeader(HttpHeader header);
+  // request.SetBody(std::string body);
+  
+  return request;
 }
 
 HttpResponse ConnectionManager::ProcessBadRequest(std::string raw_request) {
