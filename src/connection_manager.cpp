@@ -36,7 +36,7 @@ void ConnectionManager::RunTcpServer() {
     if (len) {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
       
-      string raw_request = message_stream.str();
+      std::string raw_request = message_stream.str();
       HttpRequest req = ProcessGetRequest(message_stream.str());
       
       // use req to create response object
@@ -50,40 +50,44 @@ void ConnectionManager::RunTcpServer() {
   }
 }
 
-
 HttpRequest ConnectionManager::ProcessGetRequest(const std::string raw_request) {
-  std::string method, uri, version;
-  std::vector<string> tokens;
-  std::vector<string> request_line_tokens;
-  string request_line;
+  std::string method;
+  std::string uri;
+  std::string version;
+  std::vector<std::string> tokens;
+  std::vector<std::string> request_line_tokens;
+  std::string request_line_message;
   
-  tokenize(rawMessage, tokens, "\r\n");
+  tokenize(raw_request, tokens, "\r\n");
   
   if (tokens.size() > 0) {
-    request_line = tokens[0];
+    request_line_message = tokens[0];
   } else {
-    throw ResponseException(400);
+    //throw ResponseException(400);
   }
   
-  tokenize(request_line, request_line_tokens);
+  // request line
+  tokenize(request_line_message, request_line_tokens);
   if (request_line_tokens.size() == 3) {
     method = request_line_tokens[0];
     uri = request_line_tokens[1];
     version = request_line_tokens[2];
   } else {
-    throw ResponseException(400);
+    //throw ResponseException(400);
   }
   
   HttpRequestLine request_line(method, uri, version);
   HttpRequest request(request_line);
   
-  for(int i = 1; i < tokens.size(); i++){
+  for(unsigned int i = 1; i < tokens.size(); i++){
     if(tokens[i] == ""){
+      // request body
       if(i < tokens.size() - 1)
         request.SetBody(tokens[tokens.size() - 1]);
       break;
     }
-    vector<std::string> keyValue;
+    // request headers
+    std::vector<std::string> keyValue;
     tokenize(tokens[i], keyValue, ": ");
     if(keyValue.size() == 2){
       HttpHeader http_header(keyValue[0], keyValue[1]);

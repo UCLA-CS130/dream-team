@@ -2,6 +2,8 @@
 #include "../src/connection_manager.h"
 
 TEST(ConnectionManagerTest, ValidGetRequest) {
+  // TODO: test ProcessGetRequest
+  // function has been refractored to return a HttpRequest object
   const std::string valid_get_req = 
     "GET /random_res HTTP/1.1\r\n\r\n";
 

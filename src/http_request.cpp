@@ -6,5 +6,5 @@
 #include "http_request.h"
 
 HttpRequest::HttpRequest(const HttpRequestLine &request)
-  : HttpMessage(request.Serialize()), m_request(request) {
+  : HttpMessage(request.Serialize()), request_(request) {
 }
