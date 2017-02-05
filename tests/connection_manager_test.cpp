@@ -1,10 +1,10 @@
-/*#include "gmock/gmock.h"
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "../src/connection_manager.h"
-#include "../src/parsed_config.h"
 #include "mock_parsed_config.h"
 
 using ::testing::AtLeast;
+using ::testing::Return;
 
 TEST(ConnectionManagerTest, ValidGetRequest) {
   const std::string valid_get_req = 
@@ -20,11 +20,13 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
   const std::string expected_body = "Message of the Body.";
 
   MockParsedConfig parsed_config;
-  EXPECT_CALL(parsed_config, getPortNumber())
+  EXPECT_CALL(parsed_config, GetPortNumber())
     .Times(AtLeast(1))
     .WillOnce(Return(2020));
 
   ConnectionManager manager(&parsed_config);
+
+  EXPECT_EQ(2020, manager.GetParsedConfig()->GetPortNumber());
 
   HttpRequest req = parse_message(valid_get_req);
   HttpRequestLine request_line = req.GetRequestLine();
@@ -48,12 +50,8 @@ TEST(ConnectionManagerTest, InvalidGetRequest) {
     "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n";
 
   MockParsedConfig parsed_config;
-  EXPECT_CALL(parsed_config, getPortNumber())
-    .Times(AtLeast(1))
-    .WillOnce(Return(2020));
   
   ConnectionManager manager(&parsed_config);
   HttpResponse resp = manager.ProcessBadRequest(bad_req);
   EXPECT_EQ(resp.Serialize(), expected_resp);
 }
-*/

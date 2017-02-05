@@ -26,13 +26,15 @@ all: webserver
 test: unit-test integration-test
 
 unit-test: gunit webserver	
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include $(TEST_IO) $(TEST_ARGS)
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS)
 	./bin/$@
 
 gunit:
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -c $(GTEST_DIR)/src/gtest-all.cc $(TEST_ARGS)
-	ar -rv build/libgtest.a gtest-all.o
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -isystem $(GMOCK_DIR)/include -I${GMOCK_DIR} -c $(GTEST_DIR)/src/gtest-all.cc $(TEST_ARGS)
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -I${GTEST_DIR} -isystem $(GMOCK_DIR)/include -I${GMOCK_DIR} -c $(GMOCK_DIR)/src/gmock-all.cc $(TEST_ARGS)
+	ar -rv build/libgtest.a gtest-all.o gmock-all.o
 	rm gtest-all.o
+	rm gmock-all.o
 
 unit-test-coverage: TEST_ARGS += -fprofile-arcs -ftest-coverage
 unit-test-coverage: unit-test

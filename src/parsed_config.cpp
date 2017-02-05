@@ -28,10 +28,10 @@ bool ParsedConfig::initParsedConfig(NginxConfig* config) {
   return true;
 }
 
-unsigned ParsedConfig::getPortNumber() {
+unsigned ParsedConfig::GetPortNumber() {
   return port_number_;
 }
 
-std::string ParsedConfig::getRootDirectory() {
+std::string ParsedConfig::GetRootDirectory() {
   return root_dir_;
 }

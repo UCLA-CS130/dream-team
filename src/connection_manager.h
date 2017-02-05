@@ -19,6 +19,7 @@ class ConnectionManager {
   void RunTcpServer();
   HttpResponse ProcessGetRequest(const std::string raw_request);
   HttpResponse ProcessBadRequest(std::string raw_request);
+  ParsedConfig* GetParsedConfig();
  private:
   void AttachDefaultContentTypeHeader(HttpResponse &resp);
   void StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp);

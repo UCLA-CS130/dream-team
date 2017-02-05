@@ -11,9 +11,10 @@
 
 class ParsedConfig {
 public:
+  ParsedConfig() {}
   ParsedConfig(NginxConfig* config);
-  unsigned getPortNumber();
-  std::string getRootDirectory();
+  virtual unsigned GetPortNumber();
+  std::string GetRootDirectory();
 private:
   bool initialize(NginxConfig* config);
   bool initParsedConfig(NginxConfig* config);

@@ -22,7 +22,7 @@ ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
 void ConnectionManager::RunTcpServer() {
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
-					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->getPortNumber()));
+					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->GetPortNumber()));
 
   while (true) {
     boost::asio::ip::tcp::socket socket(aios);
@@ -75,4 +75,8 @@ void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse &resp) {
 
 void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp) {
   boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
+}
+
+ParsedConfig* ConnectionManager::GetParsedConfig() {
+  return parsed_config_;
 }
