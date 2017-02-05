@@ -39,7 +39,8 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       HttpRequest req = parse_message(raw_request);
       
-      HttpResponse resp = ProcessBadRequest("");
+      // TODO: refractor process get request to take request
+      HttpResponse resp = ProcessGetRequest(raw_request);
       StreamHttpResponse(socket, resp);
     } else {
       HttpResponse resp = ProcessBadRequest("");
