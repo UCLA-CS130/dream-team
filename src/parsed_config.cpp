@@ -35,11 +35,15 @@ bool ParsedConfig::initParsedConfig(NginxConfig* config) {
   for(const auto& statement : config->statements_) {
   	std::cout << "initCall\n" << statement->ToString(0) << "\n";
   	//std::cout << "numtokens: " << statement.get()->tokens_.size() << "\n";
-    if (!initParsedConfigHelper(statement.get()))
-      return false;
+/*    if (!initParsedConfigHelper(statement.get()))
+      return false;*/
   	/*for (const auto token : statement->tokens_) {
   		std::cout << token << "\n";
   	}*/
+  	if (statement->child_block_.get() != nullptr && !initParsedConfig(statement->child_block_.get())) {
+	  	std::cout << "Going into child block" << "\n";
+	    return false;
+  	}
   }
 
   return true;
@@ -47,17 +51,12 @@ bool ParsedConfig::initParsedConfig(NginxConfig* config) {
 
 bool ParsedConfig::initParsedConfigHelper(NginxConfigStatement* statement) {
   for (unsigned int i = 0; i < statement->tokens_.size(); i++) {
-  	std::cout << statement->tokens_[i] << "\n";
-/*    if (statement->tokens_[i] == "listen" && i + 1 < statement->tokens_.size()) {
+  	std::cout << statement->ToString(0) << "\n";
+    if (statement->tokens_[i] == "listen" && i + 1 < statement->tokens_.size()) {
       port_number_ = std::stoi(statement->tokens_[i + 1]);
     } else if (statement->tokens_[i] == "root" && i + 1 < statement->tokens_.size()) {
       root_dir_ = statement->tokens_[i + 1];
-    }*/
-  }
-  
-  if (statement->child_block_.get() != nullptr && !initParsedConfig(statement->child_block_.get())) {
-  	std::cout << "Going into child block" << "\n";
-    return false;
+    }
   }
 
   return (port_number_ != INVALID_PORT && root_dir_ != "");
