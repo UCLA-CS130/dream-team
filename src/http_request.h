@@ -10,15 +10,15 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "utils.h"
 #include "http_message.h"
 #include "http_request_line.h"
 
 class HttpRequest : public HttpMessage {
 public:
   HttpRequest(const HttpRequestLine &request);
+  const HttpRequestLine GetRequestLine();
 private:
-  const HttpRequestLine &request_;
+  const HttpRequestLine request_line_;
 };
 
 #endif /* HttpRequest_h */

@@ -11,7 +11,9 @@
 class HttpHeader {
 public:
   HttpHeader(std::string key, std::string value);
-  std::string Serialize() const;  
+  std::string Serialize() const;
+  std::string GetKey();
+  std::string GetValue();
 private:
   std::string key_;
   std::string value_;
