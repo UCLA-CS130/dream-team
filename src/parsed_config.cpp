@@ -4,8 +4,6 @@
 ParsedConfig::ParsedConfig(NginxConfig* config) 
   : port_number_(INVALID_PORT), root_dir_("") { // Treating port 0 as invalid
 	if (!initParsedConfig(config)) {
-	  printf("port_number is: %d\n", port_number_);
-	  std::cout << "root_dir_ is: " << root_dir_ << "\n";
 	  throw std::invalid_argument("Bad config file");
 	} else if (port_number_ > MAX_PORT) {
       throw std::invalid_argument("Bad port number");
