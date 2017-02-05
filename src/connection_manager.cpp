@@ -39,7 +39,7 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       HttpRequest req = parse_message(raw_request);
       
-      // TODO: refractor process get request to take request
+      // TODO: refactor process get request to take request
       HttpResponse resp = ProcessGetRequest(raw_request);
       StreamHttpResponse(socket, resp);
     } else {
@@ -51,7 +51,6 @@ void ConnectionManager::RunTcpServer() {
 
 
 HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
-  // consider calling Utils::parseMessage here
   StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
   
   HttpResponse response(status);

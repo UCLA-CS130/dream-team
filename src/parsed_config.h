@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <stdexcept>
 #include "nginx-configparser/config_parser.h"
 
 #define INVALID_PORT 0
@@ -13,10 +12,9 @@ class ParsedConfig {
 public:
   ParsedConfig() {}
   ParsedConfig(NginxConfig* config);
-  virtual unsigned GetPortNumber();
-  std::string GetRootDirectory();
+  virtual unsigned GetPortNumber(); // virtual for mocking purposes
+  virtual std::string GetRootDirectory();
 private:
-  bool initialize(NginxConfig* config);
   bool initParsedConfig(NginxConfig* config);
   unsigned port_number_;
   std::string root_dir_;

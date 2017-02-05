@@ -20,14 +20,8 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
   const std::string expected_body = "Message of the Body.";
 
   MockParsedConfig parsed_config;
-  EXPECT_CALL(parsed_config, GetPortNumber())
-    .Times(AtLeast(1))
-    .WillOnce(Return(2020));
-
   ConnectionManager manager(&parsed_config);
-
-  EXPECT_EQ(2020, manager.GetParsedConfig()->GetPortNumber());
-
+  
   HttpRequest req = parse_message(valid_get_req);
   HttpRequestLine request_line = req.GetRequestLine();
   EXPECT_EQ(expected_method, request_line.GetMethod());
@@ -50,7 +44,6 @@ TEST(ConnectionManagerTest, InvalidGetRequest) {
     "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n";
 
   MockParsedConfig parsed_config;
-  
   ConnectionManager manager(&parsed_config);
   HttpResponse resp = manager.ProcessBadRequest(bad_req);
   EXPECT_EQ(resp.Serialize(), expected_resp);
