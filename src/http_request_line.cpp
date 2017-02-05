@@ -14,15 +14,15 @@ HttpRequestLine::HttpRequestLine(std::string method, std::string uri, std::strin
   version_ = version;
 }
 
-std::string HttpRequestLine::GetMethod() {
+std::string HttpRequestLine::GetMethod() const {
   return method_;
 }
 
-std::string HttpRequestLine::GetProtocolVersion() {
+std::string HttpRequestLine::GetProtocolVersion() const {
   return version_;
 }
 
-std::string HttpRequestLine::GetUri() {
+std::string HttpRequestLine::GetUri() const {
   return uri_;
 }
 

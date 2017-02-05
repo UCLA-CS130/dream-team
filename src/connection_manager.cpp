@@ -18,7 +18,7 @@ ConnectionManager::ConnectionManager(unsigned port_number) {
   port_number_ = port_number;
 }
 
-// Inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
+// Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
@@ -35,8 +35,12 @@ void ConnectionManager::RunTcpServer() {
 
     if (len) {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
-
-      HttpResponse resp = ProcessGetRequest(message_stream.str());
+      
+      std::string raw_request = message_stream.str();
+      HttpRequest req = parse_message(raw_request);
+      
+      // TODO: refractor process get request to take request
+      HttpResponse resp = ProcessGetRequest(raw_request);
       StreamHttpResponse(socket, resp);
     } else {
       HttpResponse resp = ProcessBadRequest("");
@@ -45,7 +49,9 @@ void ConnectionManager::RunTcpServer() {
   }
 }
 
+
 HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
+  // consider calling Utils::parseMessage here
   StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
   
   HttpResponse response(status);

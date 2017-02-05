@@ -11,3 +11,10 @@ HttpHeader::HttpHeader(std::string key, std::string value)
 std::string HttpHeader::Serialize() const {
   return key_ + ": " + value_;
 }
+
+std::string HttpHeader::GetKey(){
+  return key_;
+}
+std::string HttpHeader::GetValue(){
+  return value_;
+}
