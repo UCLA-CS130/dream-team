@@ -17,7 +17,6 @@ public:
 private:
   bool initialize(NginxConfig* config);
   bool initParsedConfig(NginxConfig* config);
-  bool initParsedConfigHelper(NginxConfigStatement* statement); 
   unsigned port_number_;
   std::string root_dir_;
 };

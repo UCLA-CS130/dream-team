@@ -5,11 +5,8 @@ import os, sys, subprocess, time, httplib, urllib
 # Dynamically creates a config file for the test
 
 def create_test_config(port_number, root_dir, test_fname):
-  #  config_file_content = 'server {\n\tlisten ' + port_number + ';\n' + \
-  #                        'root ' + root_dir + ';\n}\n'
-  #  config_file_content = 'server {\n\troot ' + root_dir + ';\n' + \
-  #                        'listen ' + port_number + ';\n}\n'
-    config_file_content = 'server {\n\troot hola;\n\tlisten 2020;\n}\n'
+    config_file_content = 'server {\n\tlisten ' + port_number + ';\n' + \
+                          'root ' + root_dir + ';\n}\n'
     config_file = open(test_fname, 'w+')
     config_file.write(config_file_content)
     config_file.close
