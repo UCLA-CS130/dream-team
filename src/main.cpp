@@ -3,9 +3,7 @@
 #include <exception>
 #include <boost/asio.hpp>
 #include "connection_manager.h"
-#include "utils.h"
-
-#define MAX_PORT 65535
+#include "parsed_config.h"
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
@@ -19,15 +17,10 @@ int main(int argc, char* argv[]) {
     std::cerr << "Invalid config file" << std::endl;
     return 1;
   }
-  
-  int port_number = NginxConfigGetPort(&config);
-  if (port_number < 0 || port_number > MAX_PORT) {
-    std::cerr << "Invalid port number" << std::endl;
-    return 1;
-  }
 
   try {
-    ConnectionManager manager(port_number);
+    ParsedConfig parsed_config(&config);
+    ConnectionManager manager(&parsed_config);
     manager.RunTcpServer();
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;

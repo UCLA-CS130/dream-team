@@ -11,17 +11,18 @@
 #include "utils.h"
 #include "http_response.h"
 #include "http_request.h"
+#include "parsed_config.h"
 
 class ConnectionManager {
  public:
-  ConnectionManager(unsigned port_number);
+  ConnectionManager(ParsedConfig* parsed_config);
   void RunTcpServer();
   HttpResponse ProcessGetRequest(const std::string raw_request);
   HttpResponse ProcessBadRequest(std::string raw_request);
  private:
   void AttachDefaultContentTypeHeader(HttpResponse &resp);
   void StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp);
-  unsigned port_number_;
+  ParsedConfig* parsed_config_;
 };
 
 #endif

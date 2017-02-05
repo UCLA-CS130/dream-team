@@ -4,8 +4,12 @@ import os, sys, subprocess, time, httplib, urllib
 
 # Dynamically creates a config file for the test
 
-def create_test_config(port_number, test_fname):
-    config_file_content = 'server {\n\tlisten ' + port_number + ';\n}\n'
+def create_test_config(port_number, root_dir, test_fname):
+  #  config_file_content = 'server {\n\tlisten ' + port_number + ';\n' + \
+  #                        'root ' + root_dir + ';\n}\n'
+  #  config_file_content = 'server {\n\troot ' + root_dir + ';\n' + \
+  #                        'listen ' + port_number + ';\n}\n'
+    config_file_content = 'server {\n\troot hola;\n\tlisten 2020;\n}\n'
     config_file = open(test_fname, 'w+')
     config_file.write(config_file_content)
     config_file.close
@@ -49,11 +53,12 @@ def is_echo_valid(response, request_type, request_resource):
 
 def main():
     port_number = '2001'
+    root_dir = 'hola'
     test_fname = 'integration_test_config'
     path_to_bin = os.getcwd() + '/bin'
     path_to_config_file = path_to_bin + '/' + test_fname
 
-    create_test_config(port_number, path_to_config_file)
+    create_test_config(port_number, root_dir, path_to_config_file)
 
     running_server = subprocess.Popen(['./webserver', test_fname], cwd=path_to_bin)
 

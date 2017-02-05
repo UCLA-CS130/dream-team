@@ -6,6 +6,7 @@ CLASSES = src/*.cpp
 
 TEST_FLAGS = -std=c++0x -isystem
 GTEST_DIR = $(NGINX_DIR)/googletest/googletest
+GMOCK_DIR = $(NGINX_DIR)/googletest/googlemock
 TEST_ARGS = -pthread -lboost_system
 TEST_CLASSES = 	src/http_header.cpp \
 		src/http_message.cpp \
@@ -15,7 +16,8 @@ TEST_CLASSES = 	src/http_header.cpp \
 		src/http_request_line.cpp \
 		src/connection_manager.cpp \
                 src/utils.cpp \
-		$(NGINX_DIR)/config_parser.cc
+		$(NGINX_DIR)/config_parser.cc \
+		src/parsed_config.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 

@@ -14,15 +14,15 @@ const unsigned SUCCESS = 200;
 const std::string BAD_REQUEST_MESSAGE = "Bad Request";
 const unsigned BAD_REQUEST = 400;
 
-ConnectionManager::ConnectionManager(unsigned port_number) {
-  port_number_ = port_number;
+ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
+  parsed_config_ = parsed_config;
 }
 
 // Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
-					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number_));
+					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->getPortNumber()));
 
   while (true) {
     boost::asio::ip::tcp::socket socket(aios);
