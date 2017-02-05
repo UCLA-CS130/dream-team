@@ -16,7 +16,6 @@ std::string HttpMessage::Serialize() const {
   }
   
   serialized_output += REQUEST_DELIMITER;
-  serialized_output += body_;
   return serialized_output;
 }
 
@@ -24,12 +23,13 @@ void HttpMessage::AddHeader(HttpHeader header) {
   headers_.push_back(header);
 }
 
-HttpHeader HttpMessage::FindHeader(std::string key){
-  for(unsigned int i = 0; i < headers_.size(); i++){
-    if(headers_[i].GetKey() == key){
+HttpHeader HttpMessage::FindHeader(std::string key) {
+  for(unsigned int i = 0; i < headers_.size(); i++) {
+    if(headers_[i].GetKey() == key) {
       return headers_[i];
     }
   }
+
   HttpHeader http_header(key, "");
   return http_header;
 }
@@ -42,10 +42,10 @@ std::vector<std::string> HttpMessage::GetAllHeaderKeys(){
   return keys;
 }
 
-void HttpMessage::SetBody(std::string body) {
+void HttpMessage::SetBody(HttpEntity body) {
   body_ = body;
 }
 
-std::string HttpMessage::GetBody() {
+HttpEntity HttpMessage::GetBody() const {
   return body_;
 }
