@@ -14,15 +14,15 @@ const unsigned SUCCESS = 200;
 const std::string BAD_REQUEST_MESSAGE = "Bad Request";
 const unsigned BAD_REQUEST = 400;
 
-ConnectionManager::ConnectionManager(unsigned port_number) {
-  port_number_ = port_number;
+ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
+  parsed_config_ = parsed_config;
 }
 
 // Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
-					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number_));
+					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->GetPortNumber()));
 
   while (true) {
     boost::asio::ip::tcp::socket socket(aios);
@@ -39,7 +39,7 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       HttpRequest req = parse_message(raw_request);
       
-      // TODO: refractor process get request to take request
+      // TODO: refactor process get request to take request
       HttpResponse resp = ProcessGetRequest(raw_request);
       StreamHttpResponse(socket, resp);
     } else {
@@ -51,7 +51,6 @@ void ConnectionManager::RunTcpServer() {
 
 
 HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
-  // consider calling Utils::parseMessage here
   StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
   
   HttpResponse response(status);
@@ -75,4 +74,8 @@ void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse &resp) {
 
 void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp) {
   boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
+}
+
+ParsedConfig* ConnectionManager::GetParsedConfig() {
+  return parsed_config_;
 }
