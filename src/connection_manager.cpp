@@ -37,9 +37,16 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       std::cout << raw_request << std::endl;
 
-      HttpRequest req = parse_message(raw_request);      
+      HttpRequest req = parse_message(raw_request);
       HttpResponse resp = ProcessGetRequest(req);
-      StreamHttpResponse(socket, resp);
+      
+      // TODO: Abstract echoing/normal requests into request consumer classes
+      if (parsed_config_->IsRequestEcho(req.GetRequestLine().GetUri())) {
+	boost::asio::write(socket, boost::asio::buffer(resp.Serialize()));
+	boost::asio::write(socket, boost::asio::buffer("\r\n" + raw_request));
+      } else {	
+	StreamHttpResponse(socket, resp);
+      }      
     } else {
       HttpResponse resp = ProcessBadRequest(BAD_REQUEST);
       StreamHttpResponse(socket, resp);
@@ -52,15 +59,13 @@ HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {
   
   HttpRequestLine request_line = request.GetRequestLine();
   HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
-  
+ 
   std::string routed_url = parsed_config_->MapUserToHostUrl(request_line.GetUri());
-  std::cout << "Routed " << request_line.GetUri() << " to " << routed_url << std::endl;
-
   HttpEntity entity(routed_url);
 
   HttpResponse response(status);  
   response.AddHeader(content_type_header);
-  response.SetBody(entity);
+  response.SetBody(entity); 
   return response;
 }
 

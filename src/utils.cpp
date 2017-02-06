@@ -59,6 +59,10 @@ std::string GetUriStart(std::string uri) {
 
     end++;
   }
-
-  return uri.substr(0, end - 1);
+  
+  if (slash_count == 2) {
+    end--;
+  }
+  
+  return uri.substr(0, end);
 }

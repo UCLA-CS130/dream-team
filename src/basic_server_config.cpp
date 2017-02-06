@@ -79,13 +79,22 @@ std::string BasicServerConfig::GetEchoPath() {
   return echo_path_;
 }
 
+bool BasicServerConfig::IsRequestEcho(std::string req) {
+  std::string uri_start = GetUriStart(req);
+  return uri_start == GetEchoPath();
+}
+
+unsigned GetNumberSlashes(std::string uri);
+
 std::string BasicServerConfig::MapUserToHostUrl(std::string user_url) {
   std::vector<std::string> host_url_keys;
   for (auto const& map: root_url_paths_) {
     host_url_keys.push_back(map.first);
   }
   
-  std::string uri_start = GetUriStart(user_url);
+  unsigned slashes = GetNumberSlashes(user_url);
+  std::string uri_start = slashes == 1 ? "/" : GetUriStart(user_url); 
+
   for (std::string host_path : host_url_keys) {   
     if (host_path == uri_start) {
       std::string mapped_url = root_url_paths_[host_path];      
@@ -95,4 +104,15 @@ std::string BasicServerConfig::MapUserToHostUrl(std::string user_url) {
   }
 
   return user_url;
+}
+
+unsigned GetNumberSlashes(std::string uri) {
+  unsigned int slash_count = 0;  
+  for (unsigned i = 0; i < uri.length() && slash_count < 2; i++) {
+    if (uri[i] == '/') {
+      slash_count++;
+    }
+  }
+  
+  return slash_count;
 }
