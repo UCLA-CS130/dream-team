@@ -9,8 +9,8 @@
 const std::string PROTOCOL_VERSION = "HTTP/1.1";
 const std::string CONTENT_TYPE_HEADER = "Content-Type";
 
-ConnectionManager::ConnectionManager(unsigned port_number) {
-  port_number_ = port_number;
+ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
+  parsed_config_ = parsed_config;
 }
 
 // Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
@@ -19,7 +19,7 @@ void ConnectionManager::RunTcpServer() {
 
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
-					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number_));
+					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->GetPortNumber()));
 
   while (true) {
     boost::asio::ip::tcp::socket socket(aios);
@@ -52,7 +52,7 @@ HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {
   HttpRequestLine request_line = request.GetRequestLine();
   HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
   HttpEntity entity(request_line.GetUri());
-  
+
   HttpResponse response(status);  
   response.AddHeader(content_type_header);
   response.SetBody(entity);
@@ -91,4 +91,8 @@ void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket,
     HttpResponse bad_req = ProcessBadRequest(FILE_NOT_FOUND);
     boost::asio::write(socket, boost::asio::buffer(bad_req.Serialize()));
   }
+}
+
+ParsedConfig* ConnectionManager::GetParsedConfig() {
+  return parsed_config_;
 }

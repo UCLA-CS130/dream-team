@@ -1,6 +1,10 @@
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "../src/connection_manager.h"
-#include "../src/utils.h"
+#include "mock_parsed_config.h"
+
+using ::testing::AtLeast;
+using ::testing::Return;
 
 TEST(ConnectionManagerTest, ValidGetRequest) {
   const std::string valid_get_req = 
@@ -14,10 +18,10 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
   const std::string expected_header_key2 = "Connection";
   const std::string expected_header_value2 = "Keep-Alive";
   const std::string expected_body = "Message of the Body.";
-  
-  const unsigned random_port = 10;
-  ConnectionManager manager(random_port);
 
+  MockParsedConfig parsed_config;
+  ConnectionManager manager(&parsed_config);
+  
   HttpRequest req = parse_message(valid_get_req);
   HttpRequestLine request_line = req.GetRequestLine();
   EXPECT_EQ(expected_method, request_line.GetMethod());
@@ -39,9 +43,8 @@ TEST(ConnectionManagerTest, InvalidGetRequest) {
   const std::string expected_resp =
     "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\n";
 
-  const unsigned random_port = 10;
-  ConnectionManager manager(random_port);
-
+  MockParsedConfig parsed_config;
+  ConnectionManager manager(&parsed_config);
   HttpResponse resp = manager.ProcessBadRequest(bad_req);
   EXPECT_EQ(resp.Serialize(), expected_resp);
 }

@@ -12,12 +12,7 @@
 #include <string>
 #include <vector>
 #include "http_request.h"
-#include "nginx-configparser/config_parser.h"
 
-// gets port number from config file
-int NginxConfigGetPort(NginxConfig* config);
-// helper function to get port number from config file
-int configStatmentRecur(NginxConfigStatement* statement);
 // parses a string by delimeter
 void tokenize(const std::string &in, std::vector<std::string> &tokens,
               const std::string &delimeter = " ");
