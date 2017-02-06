@@ -8,7 +8,9 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 #include "http_header.h"
+#include "http_entity.h"
 
 /*
 From Apache HttpComponents:
@@ -35,15 +37,18 @@ public:
   HttpMessage(std::string start_line);
   virtual std::string Serialize() const;
   void AddHeader(HttpHeader header);
-  // return the HttpHeader based on key search, value is empty string if key is not found
+  
+  /** Returns the HttpHeader based on key search. 
+      Value is empty string if key is not found **/
   HttpHeader FindHeader(std::string key);
   std::vector<std::string> GetAllHeaderKeys();
-  void SetBody(std::string body);
-  std::string GetBody();
+
+  void SetBody(HttpEntity body);
+  HttpEntity GetBody() const;
 private:
   std::string start_line_;
-  std::string body_;
   std::vector<HttpHeader> headers_;
+  HttpEntity body_;
 };
 
 #endif

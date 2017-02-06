@@ -5,10 +5,10 @@
 
 #include "http_request.h"
 
-HttpRequest::HttpRequest(const HttpRequestLine &request)
+HttpRequest::HttpRequest(HttpRequestLine request)
   : HttpMessage(request.Serialize()), request_line_(request) {
 }
 
-const HttpRequestLine HttpRequest::GetRequestLine(){
+HttpRequestLine HttpRequest::GetRequestLine() const {
   return request_line_;
 }

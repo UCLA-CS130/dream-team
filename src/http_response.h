@@ -11,9 +11,9 @@
 
 class HttpResponse : public HttpMessage {
  public:
-  HttpResponse(const StatusLine &status);
+  HttpResponse(StatusLine status);
  private:
-  const StatusLine &status_;
+  StatusLine status_;
 };
 
 #endif

@@ -15,10 +15,10 @@
 
 class HttpRequest : public HttpMessage {
 public:
-  HttpRequest(const HttpRequestLine &request);
-  const HttpRequestLine GetRequestLine();
+  HttpRequest(HttpRequestLine request);
+  HttpRequestLine GetRequestLine() const;
 private:
-  const HttpRequestLine request_line_;
+  HttpRequestLine request_line_;
 };
 
 #endif /* HttpRequest_h */

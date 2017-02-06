@@ -21,6 +21,7 @@ public:
   HttpRequestLine(std::string method, std::string uri, std::string version);
   std::string GetMethod() const;
   std::string GetUri() const;
+  std::string GetContentType() const;
   std::string GetProtocolVersion() const;
   std::string Serialize() const;
 private:

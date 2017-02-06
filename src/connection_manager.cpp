@@ -7,12 +7,7 @@
 #include "connection_manager.h"
 
 const std::string PROTOCOL_VERSION = "HTTP/1.1";
-
-const std::string SUCCESS_MESSAGE = "OK";
-const unsigned SUCCESS = 200;
-
-const std::string BAD_REQUEST_MESSAGE = "Bad Request";
-const unsigned BAD_REQUEST = 400;
+const std::string CONTENT_TYPE_HEADER = "Content-Type";
 
 ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
   parsed_config_ = parsed_config;
@@ -20,6 +15,8 @@ ConnectionManager::ConnectionManager(ParsedConfig* parsed_config) {
 
 // Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
+  std::cout << "Starting server" << std::endl;
+
   boost::asio::io_service aios;
   boost::asio::ip::tcp::acceptor acceptor(aios, 
 					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), parsed_config_->GetPortNumber()));
@@ -27,7 +24,7 @@ void ConnectionManager::RunTcpServer() {
   while (true) {
     boost::asio::ip::tcp::socket socket(aios);
     acceptor.accept(socket);
-
+       
     std::stringstream message_stream;
     boost::asio::streambuf buffer;
     boost::system::error_code error;
@@ -37,43 +34,63 @@ void ConnectionManager::RunTcpServer() {
       message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
       
       std::string raw_request = message_stream.str();
-      HttpRequest req = parse_message(raw_request);
-      
-      // TODO: refactor process get request to take request
-      HttpResponse resp = ProcessGetRequest(raw_request);
+      std::cout << raw_request << std::endl;
+
+      HttpRequest req = parse_message(raw_request);      
+      HttpResponse resp = ProcessGetRequest(req);
       StreamHttpResponse(socket, resp);
     } else {
-      HttpResponse resp = ProcessBadRequest("");
+      HttpResponse resp = ProcessBadRequest(BAD_REQUEST);
       StreamHttpResponse(socket, resp);
     }
   }
 }
 
-
-HttpResponse ConnectionManager::ProcessGetRequest(std::string raw_request) {
-  StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);
+HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {  
+  StatusLine status(PROTOCOL_VERSION, SUCCESS);  
   
-  HttpResponse response(status);
-  AttachDefaultContentTypeHeader(response);
-  response.SetBody(raw_request);
+  HttpRequestLine request_line = request.GetRequestLine();
+  HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
+  HttpEntity entity(request_line.GetUri());
+
+  HttpResponse response(status);  
+  response.AddHeader(content_type_header);
+  response.SetBody(entity);
   return response;
 }
 
-HttpResponse ConnectionManager::ProcessBadRequest(std::string raw_request) {
-  StatusLine err_line(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE);
+HttpResponse ConnectionManager::ProcessBadRequest(unsigned status_code) {
+  StatusLine err_line(PROTOCOL_VERSION, status_code);
      
   HttpResponse err_resp(err_line);
   AttachDefaultContentTypeHeader(err_resp);
   return err_resp;
 }
 
-void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse &resp) {
-  HttpHeader content_type("Content-Type", "text/plain");
+void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse& resp) {
+  HttpHeader content_type(CONTENT_TYPE_HEADER, "text/plain");
   resp.AddHeader(content_type);
 }
 
-void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp) {
-  boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
+void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp) {
+  boost::asio::streambuf response;
+  std::ostream response_stream(&response);
+  
+  HttpEntity entity = resp.GetBody();
+  std::ifstream resp_file;
+  if (entity.OpenStream(&resp_file)) {
+    boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
+    
+    char buff[512];
+    while (resp_file.read(buff, sizeof(buff)).gcount() > 0) {
+      boost::asio::write(socket, boost::asio::buffer(buff, resp_file.gcount()));
+    }
+
+    resp_file.close();
+  } else {
+    HttpResponse bad_req = ProcessBadRequest(FILE_NOT_FOUND);
+    boost::asio::write(socket, boost::asio::buffer(bad_req.Serialize()));
+  }
 }
 
 ParsedConfig* ConnectionManager::GetParsedConfig() {

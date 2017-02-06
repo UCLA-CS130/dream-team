@@ -8,6 +8,8 @@
 
 #include <string>
 #include <boost/asio.hpp>
+#include <fstream>
+
 #include "utils.h"
 #include "http_response.h"
 #include "http_request.h"
@@ -17,12 +19,12 @@ class ConnectionManager {
  public:
   ConnectionManager(ParsedConfig* parsed_config);
   void RunTcpServer();
-  HttpResponse ProcessGetRequest(const std::string raw_request);
-  HttpResponse ProcessBadRequest(std::string raw_request);
+  HttpResponse ProcessGetRequest(const HttpRequest& request);
+  HttpResponse ProcessBadRequest(unsigned status_code);
   ParsedConfig* GetParsedConfig();
  private:
-  void AttachDefaultContentTypeHeader(HttpResponse &resp);
-  void StreamHttpResponse(boost::asio::ip::tcp::socket &socket, const HttpResponse &resp);
+  void AttachDefaultContentTypeHeader(HttpResponse& resp);
+  void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp);
   ParsedConfig* parsed_config_;
 };
 
