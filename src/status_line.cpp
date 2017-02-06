@@ -4,12 +4,17 @@
 //
 
 #include "status_line.h"
+#include <map>
 
-StatusLine::StatusLine(std::string protocol_version, 
-		       unsigned status_code, std::string reason_phrase) {
+std::map<unsigned, std::string> status_code_map = 
+  {{SUCCESS, "OK"}, 
+   {BAD_REQUEST, "Bad Request"},
+   {FILE_NOT_FOUND, "Not Found"}};
+
+StatusLine::StatusLine(std::string protocol_version, unsigned status_code) {
   protocol_version_ = protocol_version;
   status_code_ = status_code;
-  reason_phrase_ = reason_phrase;
+  reason_phrase_ = status_code_map[status_code];
 }
 
 std::string StatusLine::Serialize() const {

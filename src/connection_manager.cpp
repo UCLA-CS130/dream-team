@@ -8,12 +8,6 @@
 
 const std::string PROTOCOL_VERSION = "HTTP/1.1";
 
-const std::string SUCCESS_MESSAGE = "OK";
-const unsigned SUCCESS = 200;
-
-const std::string BAD_REQUEST_MESSAGE = "Bad Request";
-const unsigned BAD_REQUEST = 400;
-
 ConnectionManager::ConnectionManager(unsigned port_number) {
   port_number_ = port_number;
 }
@@ -45,14 +39,14 @@ void ConnectionManager::RunTcpServer() {
       HttpResponse resp = ProcessGetRequest(req);
       StreamHttpResponse(socket, resp);
     } else {
-      HttpResponse resp = ProcessBadRequest();
+      HttpResponse resp = ProcessBadRequest(BAD_REQUEST);
       StreamHttpResponse(socket, resp);
     }
   }
 }
 
 HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {  
-  StatusLine status(PROTOCOL_VERSION, SUCCESS, SUCCESS_MESSAGE);  
+  StatusLine status(PROTOCOL_VERSION, SUCCESS);  
   HttpEntity entity(request.GetRequestLine().GetUri());
 
   HttpResponse response(status);
@@ -61,8 +55,8 @@ HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {
   return response;
 }
 
-HttpResponse ConnectionManager::ProcessBadRequest() {
-  StatusLine err_line(PROTOCOL_VERSION, BAD_REQUEST, BAD_REQUEST_MESSAGE);
+HttpResponse ConnectionManager::ProcessBadRequest(unsigned status_code) {
+  StatusLine err_line(PROTOCOL_VERSION, status_code);
      
   HttpResponse err_resp(err_line);
   AttachDefaultContentTypeHeader(err_resp);
@@ -90,7 +84,7 @@ void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket,
 
     resp_file.close();
   } else {
-    HttpResponse bad_req = ProcessBadRequest();
+    HttpResponse bad_req = ProcessBadRequest(FILE_NOT_FOUND);
     boost::asio::write(socket, boost::asio::buffer(bad_req.Serialize()));
   }
 }

@@ -19,7 +19,7 @@ class ConnectionManager {
   ConnectionManager(unsigned port_number);
   void RunTcpServer();
   HttpResponse ProcessGetRequest(const HttpRequest& request);
-  HttpResponse ProcessBadRequest();
+  HttpResponse ProcessBadRequest(unsigned status_code);
  private:
   void AttachDefaultContentTypeHeader(HttpResponse& resp);
   void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp);
