@@ -1,4 +1,8 @@
 server {
-       listen 6673;
+  listen 6673;
+
+  location / {
+	root /home/usama/www
+  }
 }
 

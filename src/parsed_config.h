@@ -5,19 +5,17 @@
 #include <vector>
 #include "nginx-configparser/config_parser.h"
 
-#define INVALID_PORT 0
-#define MAX_PORT 65535
-
 class ParsedConfig {
 public:
   ParsedConfig() {}
   ParsedConfig(NginxConfig* config);
-  virtual unsigned GetPortNumber(); // virtual for mocking purposes
-  virtual std::string GetRootDirectory();
+  std::vector<std::shared_ptr<NginxConfigStatement>> FilterStatements(NginxConfig* root, 
+								      std::string search_statement);
+  std::vector<std::string> GetStatementValues(NginxConfig* root, std::string search_statement);
+  std::string GetStatementValue(NginxConfig* root, std::string search_statement);
+  NginxConfig* GetConfig();
 private:
-  bool initParsedConfig(NginxConfig* config);
-  unsigned port_number_;
-  std::string root_dir_;
+  NginxConfig* config_;
 };
 
 #endif
