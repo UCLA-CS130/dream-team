@@ -1,8 +1,14 @@
 server {
   listen 6673;
 
-  location / {
-	root /home/usama/www
+  location /static {
+      root /home/usama/workspace/;
   }
-}
+  
+  location / {
+      root /home/usama/workspace/CS130/dream-team/tests/test_file_dir/;
+  }
+
+  echo /echo;
+} 
 

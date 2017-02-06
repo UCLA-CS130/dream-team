@@ -4,6 +4,7 @@
 //
 
 #include "basic_server_config.h"
+#include "utils.h"
 
 const std::string SERVER_OBJ = "server";
 const std::string LOCATION_OBJ = "location";
@@ -79,5 +80,19 @@ std::string BasicServerConfig::GetEchoPath() {
 }
 
 std::string BasicServerConfig::MapUserToHostUrl(std::string user_url) {
-  return root_url_paths_[user_url];
+  std::vector<std::string> host_url_keys;
+  for (auto const& map: root_url_paths_) {
+    host_url_keys.push_back(map.first);
+  }
+  
+  std::string uri_start = GetUriStart(user_url);
+  for (std::string host_path : host_url_keys) {   
+    if (host_path == uri_start) {
+      std::string mapped_url = root_url_paths_[host_path];      
+      user_url = user_url.replace(0, host_path.length(), mapped_url);
+      break;
+    }
+  }
+
+  return user_url;
 }
