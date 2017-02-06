@@ -3,8 +3,8 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#include "status_line.h"
 #include <map>
+#include "status_line.h"
 
 std::map<unsigned, std::string> status_code_map = 
   {{SUCCESS, "OK"}, 

@@ -7,6 +7,7 @@
 #include "connection_manager.h"
 
 const std::string PROTOCOL_VERSION = "HTTP/1.1";
+const std::string CONTENT_TYPE_HEADER = "Content-Type";
 
 ConnectionManager::ConnectionManager(unsigned port_number) {
   port_number_ = port_number;
@@ -47,10 +48,13 @@ void ConnectionManager::RunTcpServer() {
 
 HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {  
   StatusLine status(PROTOCOL_VERSION, SUCCESS);  
-  HttpEntity entity(request.GetRequestLine().GetUri());
-
-  HttpResponse response(status);
-  AttachDefaultContentTypeHeader(response);
+  
+  HttpRequestLine request_line = request.GetRequestLine();
+  HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
+  HttpEntity entity(request_line.GetUri());
+  
+  HttpResponse response(status);  
+  response.AddHeader(content_type_header);
   response.SetBody(entity);
   return response;
 }
@@ -64,7 +68,7 @@ HttpResponse ConnectionManager::ProcessBadRequest(unsigned status_code) {
 }
 
 void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse& resp) {
-  HttpHeader content_type("Content-Type", "text/plain");
+  HttpHeader content_type(CONTENT_TYPE_HEADER, "text/plain");
   resp.AddHeader(content_type);
 }
 
