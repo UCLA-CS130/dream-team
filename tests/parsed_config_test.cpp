@@ -17,6 +17,7 @@ protected:
 };
 
 
+/*
 TEST_F(ParsedConfigTest, BasicConfigTest) {
   CreateParsedConfig("server {\n\tlisten 2020;\n}\n");
   std::vector<std::shared_ptr<NginxConfigStatement> > server_block = parsed_config_->FilterStatements("server")[0]->child_block.get();
@@ -34,3 +35,4 @@ TEST_F(ParsedConfigTest, MultipleLineConfigTest) {
   EXPECT_EQ(2020, parsed_config_->GetStatementValue(&out_config_, "listen"));
   EXPECT_EQ("../", parsed_config_->GetStatementValue(&out_config_, "root"));
 }
+*/

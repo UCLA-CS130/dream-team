@@ -21,14 +21,14 @@ bool isParsedConfigValid(BasicServerConfig* pc) {
   }
   
   std::cout << "Server port number is " << port_number << std::endl;
-  
+
   std::string root_url = pc->MapUserToHostUrl("/");
   if (root_url == "") {
     std::cerr << "Must provide at least one root url" << std::endl;
     return false;
   }
   
-  std::cout << "Server's root url is " << root_url << std::endl;   
+  std::cout << "Server's root url is " << root_url << std::endl;    
   return true;
 }
 
@@ -41,12 +41,13 @@ int main(int argc, char* argv[]) {
   NginxConfigParser config_parser;
   NginxConfig config;
   if (!config_parser.Parse(argv[1], &config)) {
-    std::cerr << "Invalid config file" << std::endl;
+    std::cerr << "Invalid config file syntax" << std::endl;
     return 1;
   }
 
   BasicServerConfig parsed_config(&config);
   if (!parsed_config.Init() || !isParsedConfigValid(&parsed_config)) {
+    std::cerr << "Invalid config file option values" << std::endl;
     return 1;
   }
   

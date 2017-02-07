@@ -6,7 +6,7 @@ server {
   }
   
   location / {
-      root /home/usama/workspace/CS130/dream-team/tests/test_file_dir/;
+      root tests/test_file_dir/;
   }
 
   echo /echo;

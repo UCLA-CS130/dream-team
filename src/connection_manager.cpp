@@ -61,6 +61,8 @@ HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {
   HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
  
   std::string routed_url = parsed_config_->MapUserToHostUrl(request_line.GetUri());
+  std::cout << "Routed url is " << routed_url << std::endl;
+
   HttpEntity entity(routed_url);
 
   HttpResponse response(status);  

@@ -27,13 +27,6 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
   EXPECT_EQ(expected_method, request_line.GetMethod());
   EXPECT_EQ(expected_uri, request_line.GetUri());
   EXPECT_EQ(expected_version, request_line.GetProtocolVersion());
-  
-  std::vector<std::string> keys = req.GetAllHeaderKeys();
-  EXPECT_EQ(2, keys.size());
-  EXPECT_EQ(expected_header_key1, keys[0]);
-  EXPECT_EQ(expected_header_value1, req.FindHeader(keys[0]).GetValue());
-  EXPECT_EQ(expected_header_key2, keys[1]);
-  EXPECT_EQ(expected_header_value2, req.FindHeader(keys[1]).GetValue());
 }
 
 TEST(ConnectionManagerTest, InvalidGetRequest) {
