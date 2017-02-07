@@ -14,6 +14,7 @@
 #include "http_response.h"
 #include "http_request.h"
 #include "basic_server_config.h"
+#include "http_entity.h"
 
 class ConnectionManager {
  public:

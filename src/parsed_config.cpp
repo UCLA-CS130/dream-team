@@ -30,7 +30,7 @@ std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, std
   return out;
 }
 
-std::string ParsedConfig::GetStatementValue(NginxConfig* root, std::string search_statement) {
+std::string ParsedConfig::GetStatementValue(NginxConfig* root, const std::string search_statement) {
   std::vector<std::string> matches = GetStatementValues(root, search_statement);
   if (matches.size() == 0) {
     return "";

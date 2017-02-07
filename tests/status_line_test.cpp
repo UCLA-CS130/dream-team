@@ -7,7 +7,7 @@ TEST(StatusLineTest, StatusSerialization) {
   const std::string status_message = "OK";
 
   const std::string status_line = protocol_version + " " + std::to_string(status_code) + " " + status_message;
-  StatusLine parsed_status_line(protocol_version, status_code, status_message);
+  StatusLine parsed_status_line(protocol_version, status_code);
 
   EXPECT_EQ(parsed_status_line.Serialize(), status_line);
 }
