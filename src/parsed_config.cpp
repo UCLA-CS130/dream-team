@@ -1,33 +1,44 @@
 #include "parsed_config.h"
 #include <iostream>
 
-ParsedConfig::ParsedConfig(NginxConfig* config) 
-  : port_number_(0), root_dir_("") { // Treating port 0 as invalid
-	initParsedConfig(config);
-}
+ParsedConfig::ParsedConfig(NginxConfig* config) : config_(config) {}
 
-bool ParsedConfig::initParsedConfig(NginxConfig* config) {
-  for(const auto& statement : config->statements_) {
-  	if (statement->child_block_.get() != nullptr && !initParsedConfig(statement->child_block_.get())) {
-	    return false;
-  	}
-
-  	for (unsigned int i = 0; i < statement->tokens_.size(); i++) {
-	    if (statement->tokens_[i] == "listen" && i + 1 < statement->tokens_.size()) {
-	      	port_number_ = std::stoi(statement->tokens_[i + 1]);
-	    } else if (statement->tokens_[i] == "root" && i + 1 < statement->tokens_.size()) {
-	      	root_dir_ = statement->tokens_[i + 1];
-	    }
-  	}
+std::vector<std::shared_ptr<NginxConfigStatement>> ParsedConfig::FilterStatements(NginxConfig* root, 
+									      std::string search_statement) {
+  std::vector<std::shared_ptr<NginxConfigStatement>> matching_statements;
+  for (const auto&  statement : root->statements_) {
+    std::string statement_name = statement->tokens_[0];
+    if (statement_name == search_statement) {
+      std::shared_ptr<NginxConfigStatement> match(statement);
+      matching_statements.push_back(match);
+    }
   }
 
-  return true;
+  return matching_statements;
 }
 
-unsigned ParsedConfig::GetPortNumber() {
-  return port_number_;
+std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, const std::string search_statement) {
+  std::vector<std::shared_ptr<NginxConfigStatement>> matches = FilterStatements(root, search_statement);
+  std::vector<std::string> out;
+  for (const auto& statement : matches) {
+    std::vector<std::string> tokens = statement->tokens_;
+    if (tokens.size() > 0) {
+      out.push_back(tokens[tokens.size() - 1]);
+    }
+  }
+
+  return out;
 }
 
-std::string ParsedConfig::GetRootDirectory() {
-  return root_dir_;
+std::string ParsedConfig::GetStatementValue(NginxConfig* root, const std::string search_statement) {
+  std::vector<std::string> matches = GetStatementValues(root, search_statement);
+  if (matches.size() == 0) {
+    return "";
+  }
+
+  return matches[0];
+}
+
+NginxConfig* ParsedConfig::GetConfig() {
+  return config_;
 }

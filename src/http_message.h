@@ -37,12 +37,6 @@ public:
   HttpMessage(std::string start_line);
   virtual std::string Serialize() const;
   void AddHeader(HttpHeader header);
-  
-  /** Returns the HttpHeader based on key search. 
-      Value is empty string if key is not found **/
-  HttpHeader FindHeader(std::string key);
-  std::vector<std::string> GetAllHeaderKeys();
-
   void SetBody(HttpEntity body);
   HttpEntity GetBody() const;
 private:

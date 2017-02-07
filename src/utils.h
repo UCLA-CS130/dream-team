@@ -17,5 +17,5 @@
 void tokenize(const std::string &in, std::vector<std::string> &tokens,
               const std::string &delimeter = " ");
 HttpRequest parse_message(std::string raw_message);
-
+std::string GetUriStart(std::string uri);
 #endif /* Utils_h */

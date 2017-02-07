@@ -13,19 +13,19 @@
 #include "utils.h"
 #include "http_response.h"
 #include "http_request.h"
-#include "parsed_config.h"
+#include "basic_server_config.h"
+#include "http_entity.h"
 
 class ConnectionManager {
  public:
-  ConnectionManager(ParsedConfig* parsed_config);
+  ConnectionManager(BasicServerConfig* parsed_config);
   void RunTcpServer();
   HttpResponse ProcessGetRequest(const HttpRequest& request);
   HttpResponse ProcessBadRequest(unsigned status_code);
-  ParsedConfig* GetParsedConfig();
  private:
   void AttachDefaultContentTypeHeader(HttpResponse& resp);
   void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp);
-  ParsedConfig* parsed_config_;
+  BasicServerConfig* parsed_config_;
 };
 
 #endif

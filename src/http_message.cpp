@@ -23,25 +23,6 @@ void HttpMessage::AddHeader(HttpHeader header) {
   headers_.push_back(header);
 }
 
-HttpHeader HttpMessage::FindHeader(std::string key) {
-  for(unsigned int i = 0; i < headers_.size(); i++) {
-    if(headers_[i].GetKey() == key) {
-      return headers_[i];
-    }
-  }
-
-  HttpHeader http_header(key, "");
-  return http_header;
-}
-
-std::vector<std::string> HttpMessage::GetAllHeaderKeys(){
-  std::vector<std::string> keys;
-  for(unsigned int i = 0; i < headers_.size(); i++){
-    keys.push_back(headers_[i].GetKey());
-  }
-  return keys;
-}
-
 void HttpMessage::SetBody(HttpEntity body) {
   body_ = body;
 }

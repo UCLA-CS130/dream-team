@@ -1,4 +1,14 @@
 server {
-       listen 6673;
-}
+  listen 6673;
+
+  location /static {
+      root /home/usama/workspace/;
+  }
+  
+  location / {
+      root tests/test_file_dir/;
+  }
+
+  echo /echo;
+} 
 

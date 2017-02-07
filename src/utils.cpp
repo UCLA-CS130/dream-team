@@ -48,3 +48,21 @@ HttpRequest parse_message(std::string raw_message){
   HttpRequest request(request_line);  
   return request;
 }
+
+std::string GetUriStart(std::string uri) {
+  int slash_count = 0;
+  unsigned end = 0;
+  for (unsigned i = 0; i < uri.length() && slash_count < 2; i++) {
+    if (uri[i] == '/') {
+      slash_count++;
+    }
+
+    end++;
+  }
+  
+  if (slash_count == 2) {
+    end--;
+  }
+  
+  return uri.substr(0, end);
+}

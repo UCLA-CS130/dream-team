@@ -1,11 +1,3 @@
-//
-//  http_request_test.cpp
-//  
-//
-//  Created by Brian Cho on 2/1/17.
-//
-//
-
 #include "gtest/gtest.h"
 #include "../src/http_request.h"
 
