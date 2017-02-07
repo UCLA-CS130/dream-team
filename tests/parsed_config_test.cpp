@@ -20,7 +20,8 @@ protected:
 TEST_F(ParsedConfigTest, BasicConfigTest) {
   CreateParsedConfig("server {\n\tlisten 2020;\n}\n");
   // Dont know how to use GetStatementValue
-  EXPECT_EQ("2020", parsed_config_->GetStatementValue(&out_config_, "server")[0]);
+  // get parsed_config_->GetStatementValue(&out_config_, "listen")[0]) returns '\0'
+  EXPECT_EQ("2020", parsed_config_->GetStatementValue(&out_config_, "listen")[0]);
 }
 
 TEST_F(ParsedConfigTest, InvalidConfigTest) {
