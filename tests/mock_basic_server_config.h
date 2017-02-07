@@ -2,9 +2,9 @@
 #define MockParsedConfig_h
 
 #include "gmock/gmock.h"
-#include "../src/parsed_config.h"
+#include "../src/basic_server_config.h"
 
-class MockParsedConfig : public ParsedConfig {
+class MockBasicServerConfig : public BasicServerConfig {
 public:
   MOCK_METHOD0(GetPortNumber, unsigned());
 };

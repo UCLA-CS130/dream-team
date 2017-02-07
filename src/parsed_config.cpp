@@ -17,7 +17,7 @@ std::vector<std::shared_ptr<NginxConfigStatement>> ParsedConfig::FilterStatement
   return matching_statements;
 }
 
-std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, std::string search_statement) {
+std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, const std::string search_statement) {
   std::vector<std::shared_ptr<NginxConfigStatement>> matches = FilterStatements(root, search_statement);
   std::vector<std::string> out;
   for (const auto& statement : matches) {

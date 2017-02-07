@@ -11,7 +11,7 @@ public:
   ParsedConfig(NginxConfig* config);
   std::vector<std::shared_ptr<NginxConfigStatement>> FilterStatements(NginxConfig* root, 
 								      std::string search_statement);
-  std::vector<std::string> GetStatementValues(NginxConfig* root, std::string search_statement);
+  std::vector<std::string> GetStatementValues(NginxConfig* root, const std::string search_statement);
   std::string GetStatementValue(NginxConfig* root, const std::string search_statement);
   NginxConfig* GetConfig();
 private:

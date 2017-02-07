@@ -12,6 +12,7 @@
 class BasicServerConfig : public ParsedConfig {
  public:
   BasicServerConfig(NginxConfig* config);
+  BasicServerConfig(){} // constructor for mocking purposes
   bool Init();
 
   unsigned GetPortNumber();

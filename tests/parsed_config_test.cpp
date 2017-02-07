@@ -19,14 +19,14 @@ protected:
 
 TEST_F(ParsedConfigTest, BasicConfigTest) {
   CreateParsedConfig("server {\n\tlisten 2020;\n}\n");
-  // Dont know how to use GetStatementValue
-  // get parsed_config_->GetStatementValue(&out_config_, "listen")[0]) returns '\0'
-  EXPECT_EQ("2020", parsed_config_->GetStatementValue(&out_config_, "listen")[0]);
+  std::vector<std::shared_ptr<NginxConfigStatement> > server_block = parsed_config_->FilterStatements("server")[0]->child_block.get();
+  EXPECT_EQ("2020", parsed_config_->GetStatementValue(server_block, "listen"));
 }
 
 TEST_F(ParsedConfigTest, InvalidConfigTest) {
   CreateParsedConfig("server 2020; }");
-  EXPECT_EQ(0, parsed_config_->GetStatementValue(&out_config_, "listen"));
+  std::vector<std::shared_ptr<NginxConfigStatement> > server_block = parsed_config_->FilterStatements("server")[0]->child_block.get();
+  EXPECT_EQ(0, parsed_config_->GetStatementValue(server_block, "listen"));
 }
 
 TEST_F(ParsedConfigTest, MultipleLineConfigTest) {
