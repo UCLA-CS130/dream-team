@@ -16,23 +16,21 @@ protected:
   }
 };
 
-
-/*
 TEST_F(ParsedConfigTest, BasicConfigTest) {
   CreateParsedConfig("server {\n\tlisten 2020;\n}\n");
-  std::vector<std::shared_ptr<NginxConfigStatement> > server_block = parsed_config_->FilterStatements("server")[0]->child_block.get();
+  NginxConfig* server_block = (parsed_config_->FilterStatements(&out_config_, "server")[0])->child_block_.get();
   EXPECT_EQ("2020", parsed_config_->GetStatementValue(server_block, "listen"));
 }
 
 TEST_F(ParsedConfigTest, InvalidConfigTest) {
   CreateParsedConfig("server 2020; }");
-  std::vector<std::shared_ptr<NginxConfigStatement> > server_block = parsed_config_->FilterStatements("server")[0]->child_block.get();
-  EXPECT_EQ(0, parsed_config_->GetStatementValue(server_block, "listen"));
+  NginxConfig* server_block = (parsed_config_->FilterStatements(&out_config_, "server")[0])->child_block_.get();
+  EXPECT_EQ("", parsed_config_->GetStatementValue(server_block, "listen"));
 }
 
 TEST_F(ParsedConfigTest, MultipleLineConfigTest) {
   CreateParsedConfig("server {\n\tlisten 2020;\n\troot ../;\n}\n");
-  EXPECT_EQ(2020, parsed_config_->GetStatementValue(&out_config_, "listen"));
-  EXPECT_EQ("../", parsed_config_->GetStatementValue(&out_config_, "root"));
+  NginxConfig* server_block = (parsed_config_->FilterStatements(&out_config_, "server")[0])->child_block_.get();
+  EXPECT_EQ("2020", parsed_config_->GetStatementValue(server_block, "listen"));
+  EXPECT_EQ("../", parsed_config_->GetStatementValue(server_block, "root"));
 }
-*/
