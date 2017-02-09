@@ -21,3 +21,11 @@ std::string StatusLine::Serialize() const {
   std::string ser_status_code = std::to_string(status_code_);
   return protocol_version_ + " " + ser_status_code + " " + reason_phrase_;
 }
+
+std::string StatusLine::GetProtocolVersion() {
+  return protocol_version_;
+}
+
+unsigned StatusLine::GetStatusCode() {
+  return status_code_;
+}

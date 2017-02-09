@@ -27,6 +27,12 @@ TEST(ConnectionManagerTest, ValidGetRequest) {
   EXPECT_EQ(expected_method, request_line.GetMethod());
   EXPECT_EQ(expected_uri, request_line.GetUri());
   EXPECT_EQ(expected_version, request_line.GetProtocolVersion());
+
+  HttpResponse resp = manager.ProcessGetRequest(req);
+  StatusLine status = resp.GetStatusLine();
+  
+  EXPECT_EQ(status.GetStatusCode(), 200);
+  EXPECT_EQ(status.GetProtocolVersion(), expected_version);
 }
 
 TEST(ConnectionManagerTest, InvalidGetRequest) {
