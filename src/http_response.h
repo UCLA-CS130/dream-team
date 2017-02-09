@@ -12,6 +12,7 @@
 class HttpResponse : public HttpMessage {
  public:
   HttpResponse(StatusLine status);
+  StatusLine GetStatusLine();
  private:
   StatusLine status_;
 };

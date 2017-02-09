@@ -8,3 +8,7 @@
 HttpResponse::HttpResponse(StatusLine status) 
   : HttpMessage(status.Serialize()), status_(status) {
 }
+
+StatusLine HttpResponse::GetStatusLine() {
+  return status_;
+}
