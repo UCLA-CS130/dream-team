@@ -5,10 +5,10 @@ import os, sys, subprocess, time, httplib, urllib
 # Dynamically creates a config file for the test
 
 def create_test_config(port_number, root_dir, test_fname):
-    port = '\tlisten ' + port_number + ';\n'
-    echo = '\techo /echo;\n'
-    root_path = '\tlocation / {\n\t root tests/test_file_dir/;\n\t}\n'
-    config_file_content = 'server {\n' + port + echo + root_path + '}\n' 
+    port = 'port ' + port_number + ';\n'
+    echo = 'echo /echo;\n'
+    root_path = 'path / {\n\t root tests/test_file_dir/;\n\t}\n'
+    config_file_content = port + echo + root_path
 
     config_file = open(test_fname, 'w+')
     config_file.write(config_file_content)

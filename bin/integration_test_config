@@ -1,0 +1,5 @@
+port 6673;
+echo /echo;
+path / {
+	 root tests/test_file_dir/;
+	}

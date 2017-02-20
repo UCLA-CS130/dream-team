@@ -6,9 +6,8 @@
 #include "basic_server_config.h"
 #include "utils.h"
 
-const std::string SERVER_OBJ = "server";
-const std::string LOCATION_OBJ = "location";
-const std::string PORT_KEY = "listen";
+const std::string LOCATION_OBJ = "path";
+const std::string PORT_KEY = "port";
 const std::string ECHO_KEY = "echo";
 const std::string ROOT_KEY = "root";
 
@@ -16,20 +15,11 @@ BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config)
 
 bool BasicServerConfig::Init() {
   NginxConfig* root_config = GetConfig();
-  std::vector<std::shared_ptr<NginxConfigStatement>> server_matches = 
-    FilterStatements(root_config, SERVER_OBJ);
-  
-  if (server_matches.size() == 0) {
-    return false;
-  }
-  
-  std::shared_ptr<NginxConfigStatement> config_statement = server_matches[0];
-  NginxConfig* server_block = config_statement->child_block_.get();
-  
+
   bool init_status = 
-    InitPortNumber(server_block) &&
-    InitEchoPath(server_block) &&
-    InitRootUrlPaths(server_block);
+    InitPortNumber(root_config) &&
+    InitEchoPath(root_config) &&
+    InitRootUrlPaths(root_config);
 
   return init_status;
 }
