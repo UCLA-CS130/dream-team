@@ -8,6 +8,7 @@
 
 #include <map>
 #include "parsed_config.h"
+#include "request_handler.h"
 
 class BasicServerConfig : public ParsedConfig {
  public:
@@ -17,16 +18,16 @@ class BasicServerConfig : public ParsedConfig {
 
   unsigned GetPortNumber();
   bool IsRequestEcho(std::string req);
-  std::string GetEchoPath();
   std::string MapUserToHostUrl(std::string user_url);
+  RequestHandler* GetRequestHandlerFromUri(std::string uri);
  private:
   unsigned port_number_;
-  std::string echo_path_;
-  std::map<std::string, std::string> root_url_paths_;
-  
+  std::map<std::string, RequestHandler*> uri_to_request_handler_;
+  RequestHandler* default_handler_;
+
+  RequestHandler* BuildHandlerForUri(std::string uri, std::string handler_id, std::string root_dir);
   bool InitPortNumber(NginxConfig* config);
-  bool InitEchoPath(NginxConfig* config);
-  bool InitRootUrlPaths(NginxConfig* config);
+  bool InitRequestHandlers(NginxConfig* config);
 };
 
 #endif

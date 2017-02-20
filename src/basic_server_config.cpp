@@ -6,20 +6,22 @@
 #include "basic_server_config.h"
 #include "utils.h"
 
-const std::string LOCATION_OBJ = "path";
 const std::string PORT_KEY = "port";
-const std::string ECHO_KEY = "echo";
+const std::string LOCATION_OBJ = "path";
+const std::string DEFAULT_OBJ = "default";
 const std::string ROOT_KEY = "root";
+
+const std::string ECHO_HANDLER_ID = "EchoHandler";
+const std::string STATIC_HANDLER_ID = "StaticHandler";
+const std::string NOT_FOUND_HANDLER_ID = "NotFoundHandler";
 
 BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config) {}
 
 bool BasicServerConfig::Init() {
   NginxConfig* root_config = GetConfig();
-
   bool init_status = 
     InitPortNumber(root_config) &&
-    InitEchoPath(root_config) &&
-    InitRootUrlPaths(root_config);
+    InitRequestHandlers(root_config);
 
   return init_status;
 }
@@ -34,39 +36,46 @@ bool BasicServerConfig::InitPortNumber(NginxConfig* config) {
   return true;
 }
 
-bool BasicServerConfig::InitEchoPath(NginxConfig* config) {
-  echo_path_ = GetStatementValue(config, ECHO_KEY);
-  return true;
-}
-
-bool BasicServerConfig::InitRootUrlPaths(NginxConfig* config) {
+bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
   std::vector<std::shared_ptr<NginxConfigStatement>> location_matches = 
     FilterStatements(config, LOCATION_OBJ);
   
-  if (location_matches.size() == 0) {
-    return false;
-  }
-  
   for (const auto& statement : location_matches) {
-    if (statement->tokens_.size() >= 2) {
+    if (statement->tokens_.size() >= 3) {
       NginxConfig* location_map_block = statement->child_block_.get();
 
-      std::string user_url = statement->tokens_[1];
-      std::string host_url = GetStatementValue(location_map_block, ROOT_KEY);
+      std::string uri = statement->tokens_[1];
+      std::string handler_id = statement->tokens_[2];
+      std::string root_dir = GetStatementValue(location_map_block, ROOT_KEY);
       
-      root_url_paths_[user_url] = host_url;
+      uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, root_dir);
+    }    
+  }
+
+  std::vector<std::shared_ptr<NginxConfigStatement>> default_matches =
+    FilterStatements(config, DEFAULT_OBJ);
+
+  for (const auto& statement : default_matches) {
+    if (statement->tokens_.size() == 2) {
+      std::string handler_id = statement->tokens_[1];
+      default_handler_ = BuildHandlerForUri("", handler_id, "");
     }    
   }
   
   return true;
 }
 
-unsigned BasicServerConfig::GetPortNumber() {
-  return port_number_;
+RequestHandler* GetRequestHandlerFromUri(std::string uri) {
+  return uri_to_request_handler_[uri];
 }
 
-std::string BasicServerConfig::GetEchoPath() {
-  return echo_path_;
+RequestHandler* BuildHandlerForUri(std::string uri, std::string handler_id, std::string root_dir) {
+    /* TODO: Return the appropriate RequestHandler* */
+    return nullptr;
+}
+
+unsigned BasicServerConfig::GetPortNumber() {
+  return port_number_;
 }
 
 bool BasicServerConfig::IsRequestEcho(std::string req) {
@@ -83,7 +92,7 @@ std::string BasicServerConfig::MapUserToHostUrl(std::string user_url) {
   }
   
   unsigned slashes = GetNumberSlashes(user_url);
-  std::string uri_start = slashes == 1 ? "/" : GetUriStart(user_url); 
+  std::string uri_start = slashes == 1 ? "/" : GetUriStart(user_url);
 
   for (std::string host_path : host_url_keys) {   
     if (host_path == uri_start) {

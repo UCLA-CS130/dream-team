@@ -6,8 +6,8 @@ import os, sys, subprocess, time, httplib, urllib
 
 def create_test_config(port_number, root_dir, test_fname):
     port = 'port ' + port_number + ';\n'
-    echo = 'echo /echo;\n'
-    root_path = 'path / {\n\t root tests/test_file_dir/;\n\t}\n'
+    echo = 'path /echo EchoHandler {};\n'
+    root_path = 'path / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n'
     config_file_content = port + echo + root_path
 
     config_file = open(test_fname, 'w+')
