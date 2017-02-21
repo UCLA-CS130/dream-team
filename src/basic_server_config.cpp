@@ -4,6 +4,7 @@
 //
 
 #include "basic_server_config.h"
+#include <iostream>
 #include "utils.h"
 
 const std::string PORT_KEY = "port";
@@ -47,6 +48,8 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
       std::string uri = statement->tokens_[1];
       std::string handler_id = statement->tokens_[2];
       std::string root_dir = GetStatementValue(location_map_block, ROOT_KEY);
+
+      printf("URI: %s, Handler_id: %s, Root_dir: %s\n", uri.c_str(), handler_id.c_str(), root_dir.c_str());
       
       uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, root_dir);
     }    
