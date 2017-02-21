@@ -93,10 +93,20 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     boost::asio::read_until(socket, response_, "\r\n\r\n");
 
     std::string header;
+    size_t index;
+    size_t cr;
     while (std::getline(response_stream, header) && header != "\r") {
+      index = header.find(':', 0);
+      cr = header.find('\r', index);
+      if (index != std::string::npos) {
+      response->AddHeader(header.substr(0, index), header.substr(index+2, cr - (index + 2)));
+      }
+     
+/*
       std::vector<std::string> header_token;
       tokenize(header, header_token, HEADER_KEY_VALUE_DELIMITER);
       response->AddHeader(header_token[0], header_token[1]);
+*/
     }
     std::cout << "\n";
 
@@ -106,6 +116,7 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       ss << &response_;
       body_ += ss.str();
     }
+    
 
     // Read until EOF, writing data to output as we go.
     boost::system::error_code error;
