@@ -18,6 +18,7 @@ class ProxyHandler : public RequestHandler {
  private:
   std::string proxy_host_;
   std::string proxy_port_;
+  std::string redirect_uri_;
 };
 
 REGISTER_REQUEST_HANDLER(ProxyHandler);
