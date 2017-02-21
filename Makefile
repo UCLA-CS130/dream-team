@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -g -Wall -pthread -std=c++11 -lboost_system
+FLAGS = -g -Wall -pthread -std=c++11 -lboost_system -lboost_regex
 NGINX_DIR = src/nginx-configparser
 
 CLASSES = src/*.cpp
