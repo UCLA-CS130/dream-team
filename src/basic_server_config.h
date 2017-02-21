@@ -17,8 +17,6 @@ class BasicServerConfig : public ParsedConfig {
   bool Init();
 
   unsigned GetPortNumber();
-  bool IsRequestEcho(std::string req);
-  std::string MapUserToHostUrl(std::string user_url);
   RequestHandler* GetRequestHandlerFromUri(std::string uri);
  private:
   unsigned port_number_;

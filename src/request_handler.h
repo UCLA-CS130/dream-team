@@ -6,15 +6,16 @@
 
 #include "http_request.h"
 #include "http_response.h"
-#include "nginx-configparser/config_parser.h"
 
 class RequestHandler {
  public:
   enum Status {
-    OK = 0;
+    OK = 0
     // Define your status codes here.
   };
   
+  /*
+
   // Initializes the handler. Returns a response code indicating success or
   // failure condition.
   // uri_prefix is the value in the config file that this handler will run for.
@@ -27,7 +28,7 @@ class RequestHandler {
   // contents of the response object are undefined, and the server will return
   // HTTP code 500.
   virtual Status HandleRequest(const Request& request,
-                               Response* response) = 0;
+                               Response* response) = 0;*/
 };
 
 #endif
