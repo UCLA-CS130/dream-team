@@ -11,8 +11,8 @@
 #include <fstream>
 
 #include "utils.h"
-#include "http_response.h"
-#include "http_request.h"
+#include "response.h"
+#include "request.h"
 #include "basic_server_config.h"
 #include "http_entity.h"
 

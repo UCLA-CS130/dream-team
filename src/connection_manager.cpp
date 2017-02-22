@@ -37,8 +37,8 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       std::cout << raw_request << std::endl;
 
-      HttpRequest req = parse_message(raw_request);
-      HttpResponse resp = ProcessGetRequest(req);
+      unique_ptr<Request> req = Request.Parse(raw_request);
+      Response resp = ProcessGetRequest(*req);
       
       /*if (parsed_config_->IsRequestEcho(req.GetRequestLine().GetUri())) {
       	boost::asio::write(socket, boost::asio::buffer(resp.Serialize()));
