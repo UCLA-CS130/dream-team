@@ -20,10 +20,10 @@ class BasicServerConfig : public ParsedConfig {
   RequestHandler* GetRequestHandlerFromUri(std::string uri);
  private:
   unsigned port_number_;
-  std::map<std::string, RequestHandler*> uri_to_request_handler_;
-  RequestHandler* default_handler_;
+  std::map<std::string, std::unique_ptr<RequestHandler> > uri_to_request_handler_;
+  std::unique_ptr<RequestHandler> default_handler_;
 
-  RequestHandler* BuildHandlerForUri(std::string uri, std::string handler_id, std::string root_dir);
+  std::unique_ptr<RequestHandler> BuildHandlerForUri(std::string uri, std::string handler_id, NginxConfig* child_block);
   bool InitPortNumber(NginxConfig* config);
   bool InitRequestHandlers(NginxConfig* config);
 };

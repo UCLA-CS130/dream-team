@@ -6,6 +6,9 @@
 #include "basic_server_config.h"
 #include "utils.h"
 
+#define PATH_NUM_TOKENS 3
+#define DEFAULT_NUM_TOKENS 2
+
 const std::string PORT_KEY = "port";
 const std::string LOCATION_OBJ = "path";
 const std::string DEFAULT_OBJ = "default";
@@ -41,14 +44,12 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
     FilterStatements(config, LOCATION_OBJ);
   
   for (const auto& statement : location_matches) {
-    if (statement->tokens_.size() >= 3) {
-      NginxConfig* location_map_block = statement->child_block_.get();
-
+    if (statement->tokens_.size() >= PATH_NUM_TOKENS) {
+      NginxConfig* path_child_block = statement->child_block_.get();
       std::string uri = statement->tokens_[1];
       std::string handler_id = statement->tokens_[2];
-      std::string root_dir = GetStatementValue(location_map_block, ROOT_KEY);
       
-      uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, root_dir);
+      uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, path_child_block);
     }    
   }
 
@@ -56,9 +57,10 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
     FilterStatements(config, DEFAULT_OBJ);
 
   for (const auto& statement : default_matches) {
-    if (statement->tokens_.size() == 2) {
+    if (statement->tokens_.size() == DEFAULT_NUM_TOKENS) {
+      NginxConfig* default_child_block = statement->child_block_.get();
       std::string handler_id = statement->tokens_[1];
-      default_handler_ = BuildHandlerForUri("", handler_id, "");
+      default_handler_ = BuildHandlerForUri("", handler_id, default_child_block);
     }    
   }
   
@@ -66,10 +68,10 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
 }
 
 RequestHandler* BasicServerConfig::GetRequestHandlerFromUri(std::string uri) {
-  return uri_to_request_handler_[uri];
+  return uri_to_request_handler_[uri].get();
 }
 
-RequestHandler* BasicServerConfig::BuildHandlerForUri(std::string uri, std::string handler_id, std::string root_dir) {
+std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::string uri, std::string handler_id, NginxConfig* child_block) {
     /* TODO: Return the appropriate RequestHandler* */
     return nullptr;
 }
