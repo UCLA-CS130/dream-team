@@ -16,7 +16,21 @@ RequestHandler::Status StatusHandler::HandleRequest(const Request& request,
   for (StatusHandler::HandlerInfo path_info : handler_paths_) {
     resp_body += path_info.id + " " + path_info.prefix + "\n";
   }
+  
+  resp_body += "\n---Site Traffic---\n";
+  for (auto const& uri_to_resp_map : url_stat_tracker_) {
+    std::string uri = uri_to_resp_map.first;
+    resp_body += uri + ": {";
 
+    std::map<Response::ResponseCode, unsigned> url_info = uri_to_resp_map.second;
+    for (auto const& resp_to_count : url_info) {
+      resp_body += " " + std::to_string(resp_to_count.first) 
+	+ ": " + std::to_string(resp_to_count.second);
+    }
+    
+    resp_body += " }\n";
+  }
+  
   AttachTextPlainContentTypeHeader(response);
   response->SetStatus(Response::OK);
   response->SetBody(resp_body);
