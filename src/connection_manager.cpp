@@ -41,11 +41,12 @@ void ConnectionManager::RunTcpServer() {
       std::unique_ptr<Request> req = Request::Parse(raw_request);             
       RequestHandler::Status handle_resp = HandleRequest(*req, &response); 
       
-      if (handle_resp == RequestHandler::OK) {
-	StreamHttpResponse(socket, response);
-      } else {
-	std::cerr << "Error " << handle_resp << " while handling " << raw_request << std::endl;
+      if (handle_resp != RequestHandler::OK) {
+	std::cerr << "Error " << handle_resp << " while handling " << raw_request << std::endl;	
+	response.SetStatus(Response::SERVER_ERROR);
       }
+
+      StreamHttpResponse(socket, response);
     }
   }
 }
@@ -53,6 +54,10 @@ void ConnectionManager::RunTcpServer() {
 RequestHandler::Status ConnectionManager::HandleRequest(const Request& req, Response* response) {
   std::string req_uri = req.uri();
   RequestHandler* handler = parsed_config_->GetRequestHandlerFromUri(req_uri);  
+  if (handler == nullptr) {
+    return RequestHandler::UNKNOWN_HANDLER;
+  }
+
   return handler->HandleRequest(req, response);
 }
 

@@ -1,5 +1,9 @@
 port 2020;
 
+path / StaticHandler {
+     root tests/test_file_dir/;
+}
+
 path /echo EchoHandler {}
 
-default NotFoundHandler {}
+default FileNotFoundHandler {}
