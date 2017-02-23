@@ -43,6 +43,7 @@ public:
   
   std::string ToString() const;
   std::string SerializeResponseCode() const;  
+  ResponseCode GetStatus() const;
 private:
   ResponseCode response_code_;
   Headers headers_;

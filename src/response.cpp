@@ -52,3 +52,7 @@ std::string Response::ToString() const {
   serialized_output += HEADER_DELIMITER;
   return serialized_output;
 }
+
+Response::ResponseCode Response::GetStatus() const {
+  return response_code_;
+}

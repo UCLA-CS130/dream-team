@@ -45,7 +45,8 @@ void ConnectionManager::RunTcpServer() {
 	std::cerr << "Error " << handle_resp << " while handling " << raw_request << std::endl;	
 	response.SetStatus(Response::SERVER_ERROR);
       }
-
+      
+      parsed_config_->UpdateStatusHandlers(*req, response);
       StreamHttpResponse(socket, response);
     }
   }
@@ -61,7 +62,7 @@ RequestHandler::Status ConnectionManager::HandleRequest(const Request& req, Resp
   return handler->HandleRequest(req, response);
 }
 
-void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp) {
+void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp) {  
   std::string ser_resp = resp.ToString();
   boost::asio::write(socket, boost::asio::buffer(ser_resp)); 
 }
