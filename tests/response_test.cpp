@@ -43,10 +43,7 @@ TEST(ResponseTest, ResponseSerialization) {
   expectedResponse += RESPONSE_DELIMITER;
   expectedResponse += body;
   resp->SetBody(body);
-  
-  expectedResponse += RESPONSE_DELIMITER;
-  
-  EXPECT_EQ(expectedResponse, resp->ToString());
-  
+     
+  EXPECT_EQ(expectedResponse, resp->ToString());  
   delete resp;
 }

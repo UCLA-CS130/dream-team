@@ -45,8 +45,7 @@ def check_resp_headers(response):
 def check_resp_body(port, response, request_type, request_resource):
     request_text = request_type + ' ' + request_resource + ' HTTP/1.1\r\n'
     # These are included in the request by default
-    request_text += 'Host: localhost:' + port + '\r\nAccept-Encoding: identity\r\n' 
-    request_text += '\r\n\r\n\r\n' # CHECK THIS
+    request_text += 'Host: localhost:' + port + '\r\nAccept-Encoding: identity\r\n\r\n' 
     
     resp_str = response.read()
 

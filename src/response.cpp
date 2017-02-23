@@ -45,8 +45,7 @@ std::string Response::ToString() const {
   
   serialized_output += RESPONSE_DELIMITER;
   if(body_ != "") {
-    serialized_output += body_;
-    serialized_output += RESPONSE_DELIMITER;
+    serialized_output += body_;    
   }
   
   return serialized_output;
