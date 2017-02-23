@@ -41,3 +41,27 @@ tests.
 
 ```make clean``` - Cleans up binary files generated as a result of other make
 targets.
+
+## Class APIs
+
+Apart from the classes mentioned in the specification mentioned earlier, there
+are various other classes that are used in the web server. The APIs for these
+classes are mentioned below.
+
+### BasicServerConfig
+
+This object is a class representation of the input config file. It is generated
+when the server is initially started. Important methods include:
+
+```bool Init``` - Initializes the BasicServerConfig object by internally
+parsing for the port number and creating RequestHandler objects based on
+the information specified in the config file. Returns true on success, false
+on any failure to parse the config file.
+
+```unsigned GetPortNumber``` - Returns the port number specified in the
+config file.
+
+```RequestHandler* GetRequestHandlerFromUri``` - Returns a pointer to the
+RequestHandler object created from the config file, given a valid URI prefix
+specified in the config file. If the uri is not found, returns a pointer to
+the default NotFoundHandler object.
