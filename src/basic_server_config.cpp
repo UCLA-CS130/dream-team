@@ -6,6 +6,7 @@
 #include "basic_server_config.h"
 #include "utils.h"
 #include "echo_handler.h"
+#include "static_file_handler.h"
 
 #define PATH_NUM_TOKENS 3
 #define DEFAULT_NUM_TOKENS 2
@@ -103,6 +104,8 @@ std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::strin
   RequestHandler* handler = nullptr;
   if (handler_id == HANDLER_ECHO_ID) {
     handler = new EchoHandler();    
+  } else if (handler_id == HANDLER_STATIC_ID) {
+    handler = new StaticFileHandler();
   }
   
   if (handler != nullptr) {

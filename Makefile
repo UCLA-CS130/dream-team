@@ -13,7 +13,10 @@ TEST_CLASSES = 	src/connection_manager.cpp \
 		src/parsed_config.cpp \
 		src/basic_server_config.cpp \
 		src/request.cpp \
-		src/response.cpp
+		src/response.cpp \
+		src/echo_handler.cpp \
+		src/static_file_handler.cpp \
+		src/request_handler.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(NGINX_DIR)/config_parser.cc $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 

@@ -23,15 +23,3 @@ TEST(TokenizorTest, SimpleTokenize) {
     EXPECT_EQ(ser_tokenized[i], tokens[i]);
   }
 }
-
-TEST(UriTest, SimpleUri) {
-  const std::string uri = "/index.html";
-  std::string uri_start = GetUriStart(uri);
-  EXPECT_EQ(uri_start, "/index.html");
-}
-
-TEST(UriTest, MultipleSlashUri) {
-  const std::string uri = "/my_dir/index.html";
-  std::string uri_start = GetUriStart(uri);
-  EXPECT_EQ(uri_start, "/my_dir");
-}

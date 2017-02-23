@@ -11,8 +11,8 @@
 class RequestHandler {
  public:
   enum Status {
-    OK = 0
-    // Define your status codes here.
+    OK = 0,
+    INVALID_CONFIG = 1
   };
   
   // Initializes the handler. Returns a response code indicating success or
