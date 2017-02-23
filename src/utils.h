@@ -16,6 +16,6 @@
 void tokenize(const std::string &in, std::vector<std::string> &tokens,
               const std::string &delimeter = " ");
 
-unsigned NumberMatches(std::string s1, std::string s2);
+unsigned NumberMatches(const std::string s1, const std::string s2);
 
 #endif /* Utils_h */

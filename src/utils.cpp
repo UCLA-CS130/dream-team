@@ -21,7 +21,7 @@ void tokenize(const std::string &in, std::vector<std::string> &tokens,
   }
 }
 
-unsigned NumberMatches(std::string s1, std::string s2) {
+unsigned NumberMatches(const std::string s1, const std::string s2) {
   unsigned matches = 0;
   for (unsigned i = 0; 
        i < s1.length() && i < s2.length() && s1[i] == s2[i];

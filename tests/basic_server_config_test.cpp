@@ -3,11 +3,6 @@
 #include "gtest/gtest.h"
 #include "../src/basic_server_config.h"
 
-//port 2020;
-//path /echo EchoHandler {};
-//path / StaticHandler {
-//  root tests/test_file_dir/;
-//  }\n
 
 class BasicServerConfigTest : public ::testing::Test {
 protected:
