@@ -4,9 +4,9 @@ import os, sys, subprocess, time, httplib, urllib
 
 # Dynamically creates a config file for the test
 
-def create_test_config(port_number, root_dir, test_fname):
+def create_test_config(port_number, test_fname):
     port = 'port ' + port_number + ';\n'
-    echo = 'path /echo EchoHandler {};\n'
+    echo = 'path /echo EchoHandler {}\n'
     root_path = 'path / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n'
     config_file_content = port + echo + root_path
 
@@ -43,17 +43,17 @@ def check_resp_headers(response):
     return r_headers == expected_headers
 
 def check_resp_body(port, response, request_type, request_resource):
-    request_text = '\r\n' + request_type + ' ' + request_resource + ' HTTP/1.1\r\n'
+    request_text = request_type + ' ' + request_resource + ' HTTP/1.1\r\n'
     # These are included in the request by default
     request_text += 'Host: localhost:' + port + '\r\nAccept-Encoding: identity\r\n' 
-    request_text += '\r\n' # Termination of body
+    request_text += '\r\n\r\n\r\n' # CHECK THIS
     
     resp_str = response.read()
 
-    print("Request")
+    print("Request Body")
     print(request_text)
 
-    print("Response")
+    print("Response Body")
     print(resp_str)
     return request_text == resp_str
 
@@ -62,13 +62,12 @@ def is_echo_valid(port, response, request_type, request_resource):
            and check_resp_body(port, response, request_type, request_resource)
 
 def main():
-    port_number = '6673'
-    root_dir = 'hola'
+    port_number = '12397'
     test_fname = 'integration_test_config'
     path_to_bin = os.getcwd() + '/bin'
     path_to_config_file = path_to_bin + '/' + test_fname
     
-    create_test_config(port_number, root_dir, path_to_config_file)    
+    create_test_config(port_number, path_to_config_file)    
     running_server = subprocess.Popen(['./webserver', test_fname], cwd=path_to_bin)
 
     # Add a short delay to make sure the server is listening before the request is sent
