@@ -47,6 +47,7 @@ std::string Response::ToString() const {
     serialized_output += RESPONSE_DELIMITER;
     serialized_output += body_;
   }
-
+  
+  serialized_output += HEADER_DELIMITER;
   return serialized_output;
 }
