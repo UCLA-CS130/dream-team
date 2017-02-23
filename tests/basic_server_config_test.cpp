@@ -3,6 +3,12 @@
 #include "gtest/gtest.h"
 #include "../src/basic_server_config.h"
 
+//port 2020;
+//path /echo EchoHandler {};
+//path / StaticHandler {
+//  root tests/test_file_dir/;
+//  }\n
+
 class BasicServerConfigTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
@@ -22,7 +28,7 @@ protected:
 };
 
 TEST_F(BasicServerConfigTest, BasicConfigTest) {
-  bool did_parse = CreateBasicServerConfig("port 2020;\npath /echo EchoHandler {};\npath / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n");
+  bool did_parse = CreateBasicServerConfig("port 2020;\npath /echo EchoHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n");
   
   EXPECT_TRUE(did_parse);
   EXPECT_TRUE(basic_server_config_->Init());
@@ -33,5 +39,6 @@ TEST_F(BasicServerConfigTest, InvalidConfigTest) {
   bool did_parse = CreateBasicServerConfig("server 2020; }");
   
   EXPECT_FALSE(did_parse);
-  EXPECT_FALSE(basic_server_config_->Init());
+  if(did_parse)
+    EXPECT_FALSE(basic_server_config_->Init());
 }
