@@ -28,9 +28,9 @@ std::unique_ptr<Request> Request::Parse(const std::string& raw_request) {
     uri = request_line_tokens[1];
     version = request_line_tokens[2];
   }
-
-  Headers headers;
+  
   std::string body;
+  Headers headers;
   bool isHeader = true;
   for (unsigned i = 1; i < tokens.size(); i++) {
     if (isHeader && tokens[i] == "") {

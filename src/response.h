@@ -41,8 +41,8 @@ public:
   void AddHeader(const std::string& header_name, const std::string& header_value);
   void SetBody(const std::string& body);  
   
-  std::string ToString();
-  std::string SerializeResponseCode();  
+  std::string ToString() const;
+  std::string SerializeResponseCode() const;  
 private:
   ResponseCode response_code_;
   Headers headers_;

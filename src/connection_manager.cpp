@@ -36,16 +36,25 @@ void ConnectionManager::RunTcpServer() {
       
       std::string raw_request = message_stream.str();
       std::cout << raw_request << std::endl;
-
-      std::unique_ptr<Request> req = Request::Parse(raw_request);       
+      
+      Response response;
+      std::unique_ptr<Request> req = Request::Parse(raw_request);             
+      RequestHandler::Status handle_resp = HandleRequest(*req, &response); 
+      
+      if (handle_resp == RequestHandler::OK) {
+	StreamHttpResponse(socket, response);
+      } else {
+	std::cerr << "Error " << handle_resp << " while parsing " << raw_request << std::endl;
+      }
     }
   }
 }
 
-RequestHandler::Status HandleRequest(const Request& req, Response* response) {
+RequestHandler::Status ConnectionManager::HandleRequest(const Request& req, Response* response) {
   return RequestHandler::OK;  
 }
 
-void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp) {
-  
+void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp) {
+  std::string ser_resp = resp.ToString();
+  std::cout << "Sending " << ser_resp << std::endl;
 }

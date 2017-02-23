@@ -17,7 +17,7 @@ void Response::SetBody(const std::string& body) {
   body_ = body;
 }
 
-std::string Response::SerializeResponseCode() {
+std::string Response::SerializeResponseCode() const {
   switch(response_code_) {
     case ResponseCode::OK:
       return "200" + STATUS_LINE_DELIMITER + "OK";
@@ -34,7 +34,7 @@ std::string Response::SerializeResponseCode() {
   return "";
 }
 
-std::string Response::ToString() {
+std::string Response::ToString() const {
   std::string serialized_output = VERSION + STATUS_LINE_DELIMITER + SerializeResponseCode();
   for(unsigned i = 0; i < headers_.size(); i++) {
     serialized_output += HEADER_DELIMITER + 

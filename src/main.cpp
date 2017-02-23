@@ -21,7 +21,7 @@ bool isParsedConfigValid(BasicServerConfig* pc) {
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
-    std::cerr << "Usage: webserver <nginx_config_file>\n";
+    std::cerr << "Usage: webserver <nginx_config_file>" << std::endl;
     return 1;
   }
   
