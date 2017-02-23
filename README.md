@@ -7,7 +7,7 @@ This is Dream Team's implementation of the Web Server for CS 130.
 The webserver executable can be invoked with
 
 ```
-./webserver <Nginx_Config_File>
+./bin/webserver <Nginx_Config_File>
 ```
 
 where Nginx_Config_File is a configuration file as per the example in the
