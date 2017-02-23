@@ -5,6 +5,7 @@
 
 #include "basic_server_config.h"
 #include "utils.h"
+#include "echo_handler.h"
 
 #define PATH_NUM_TOKENS 3
 #define DEFAULT_NUM_TOKENS 2
@@ -14,9 +15,9 @@ const std::string LOCATION_OBJ = "path";
 const std::string DEFAULT_OBJ = "default";
 const std::string ROOT_KEY = "root";
 
-const std::string ECHO_HANDLER_ID = "EchoHandler";
-const std::string STATIC_HANDLER_ID = "StaticHandler";
-const std::string NOT_FOUND_HANDLER_ID = "NotFoundHandler";
+const std::string HANDLER_ECHO_ID = "EchoHandler";
+const std::string HANDLER_STATIC_ID = "StaticHandler";
+const std::string HANDLER_NOT_FOUND_ID = "NotFoundHandler";
 
 BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config) {}
 
@@ -67,28 +68,50 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
   return true;
 }
 
-RequestHandler* BasicServerConfig::GetRequestHandlerFromUri(std::string uri) {
-  return uri_to_request_handler_[uri].get();
+std::string BasicServerConfig::GetLongestMatchingUri(std::string client_uri) {
+  std::vector<std::string> host_url_keys;
+  for (auto const& map: uri_to_request_handler_) {
+    host_url_keys.push_back(map.first);
+  }
+  
+  unsigned max_matches = 0;
+  std::string max_matches_path = "";
+  for (std::string host_path : host_url_keys) {
+    unsigned matches = NumberMatches(host_path, client_uri);
+    if (matches > max_matches) {
+      max_matches = matches;
+      max_matches_path = host_path;
+    }
+  }
+  
+  return max_matches_path;
 }
 
-std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::string uri, std::string handler_id, NginxConfig* child_block) {
-    /* TODO: Return the appropriate RequestHandler* */
-    return nullptr;
+
+RequestHandler* BasicServerConfig::GetRequestHandlerFromUri(std::string uri) {
+  std::string host_uri = GetLongestMatchingUri(uri);
+  if (uri_to_request_handler_.count(host_uri) > 0) {
+    return uri_to_request_handler_[host_uri].get();
+  }
+
+  return nullptr;
+}
+
+std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::string uri, 
+								      std::string handler_id, 
+								      NginxConfig* child_block) {
+  RequestHandler* handler = nullptr;
+  if (handler_id == HANDLER_ECHO_ID) {
+    handler = new EchoHandler();    
+  }
+  
+  if (handler != nullptr) {
+    handler->Init(uri, *child_block);
+  }
+
+  return std::unique_ptr<RequestHandler>(handler);
 }
 
 unsigned BasicServerConfig::GetPortNumber() {
   return port_number_;
-}
-
-unsigned GetNumberSlashes(std::string uri);
-
-unsigned GetNumberSlashes(std::string uri) {
-  unsigned int slash_count = 0;  
-  for (unsigned i = 0; i < uri.length() && slash_count < 2; i++) {
-    if (uri[i] == '/') {
-      slash_count++;
-    }
-  }
-  
-  return slash_count;
 }

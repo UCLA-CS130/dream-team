@@ -28,6 +28,10 @@ class RequestHandler {
   // HTTP code 500.
   virtual Status HandleRequest(const Request& request,
 			       Response* response) = 0;
+ protected:
+  std::string uri_prefix_;
+
+  void AttachTextPlainContentTypeHeader(Response* resp);
 };
 
 #endif

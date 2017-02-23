@@ -12,9 +12,10 @@
 #include <string>
 #include <vector>
 
-// parses a string by delimeter
+// Splits a string by delimiter and sends tokenized output to tokens
 void tokenize(const std::string &in, std::vector<std::string> &tokens,
               const std::string &delimeter = " ");
-std::string GetUriStart(std::string uri);
+
+unsigned NumberMatches(std::string s1, std::string s2);
 
 #endif /* Utils_h */
