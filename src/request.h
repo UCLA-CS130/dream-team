@@ -7,9 +7,11 @@
 #define request_h
 
 #include <stdio.h>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
+#include "http_consts.h"
 
 // For the Request and Response classes, you need to implement the methods
 // and add private data as appropriate. You may also need to modify or extend
@@ -20,20 +22,16 @@
 // Usage:
 //   auto request = Request::Parse(raw_request);
 
-const std::string HEADER_DELIMITER = "\r\n";
-const std::string HEADER_KEY_VALUE_DELIMITER = ": ";
-
 class Request {
-public:
-  using Headers = std::vector<std::pair<std::string, std::string>>;
-  Request(std::string raw_request, std::string method, std::string uri, std::string version, Headers headers, std::string body);
+public:  
   static std::unique_ptr<Request> Parse(const std::string& raw_request);
   
   std::string raw_request() const;
   std::string method() const;
   std::string uri() const;
   std::string version() const;
-  
+
+  using Headers = std::vector<std::pair<std::string, std::string>>;  
   Headers headers() const;
   
   std::string body() const;

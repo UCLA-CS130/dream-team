@@ -9,22 +9,19 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <fstream>
-
 #include "utils.h"
 #include "response.h"
 #include "request.h"
+#include "request_handler.h"
 #include "basic_server_config.h"
-#include "http_entity.h"
 
 class ConnectionManager {
  public:
   ConnectionManager(BasicServerConfig* parsed_config);
   void RunTcpServer();
-  HttpResponse ProcessGetRequest(const HttpRequest& request);
-  HttpResponse ProcessBadRequest(unsigned status_code);
+  RequestHandler::Status HandleRequest(const Request& request, Response* response);
  private:
-  void AttachDefaultContentTypeHeader(HttpResponse& resp);
-  void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp);
+  void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp);
   BasicServerConfig* parsed_config_;
 };
 

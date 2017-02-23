@@ -37,68 +37,15 @@ void ConnectionManager::RunTcpServer() {
       std::string raw_request = message_stream.str();
       std::cout << raw_request << std::endl;
 
-      unique_ptr<Request> req = Request.Parse(raw_request);
-      Response resp = ProcessGetRequest(*req);
-      
-      /*if (parsed_config_->IsRequestEcho(req.GetRequestLine().GetUri())) {
-      	boost::asio::write(socket, boost::asio::buffer(resp.Serialize()));
-      	boost::asio::write(socket, boost::asio::buffer("\r\n" + raw_request));
-      } else {	
-        StreamHttpResponse(socket, resp);
-      } */     
-    } else {
-      HttpResponse resp = ProcessBadRequest(BAD_REQUEST);
-      StreamHttpResponse(socket, resp);
+      std::unique_ptr<Request> req = Request::Parse(raw_request);       
     }
   }
 }
 
-HttpResponse ConnectionManager::ProcessGetRequest(const HttpRequest& request) {  
-  StatusLine status(PROTOCOL_VERSION, SUCCESS);  
+RequestHandler::Status HandleRequest(const Request& req, Response* response) {
+  return RequestHandler::OK;  
+}
+
+void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp) {
   
-  HttpRequestLine request_line = request.GetRequestLine();
-  HttpHeader content_type_header(CONTENT_TYPE_HEADER, request_line.GetContentType());
- 
-  std::string routed_url = "";
-
-  HttpEntity entity(routed_url);
-
-  HttpResponse response(status);  
-  response.AddHeader(content_type_header);
-  response.SetBody(entity); 
-  return response;
-}
-
-HttpResponse ConnectionManager::ProcessBadRequest(unsigned status_code) {
-  StatusLine err_line(PROTOCOL_VERSION, status_code);
-     
-  HttpResponse err_resp(err_line);
-  AttachDefaultContentTypeHeader(err_resp);
-  return err_resp;
-}
-
-void ConnectionManager::AttachDefaultContentTypeHeader(HttpResponse& resp) {
-  HttpHeader content_type(CONTENT_TYPE_HEADER, "text/plain");
-  resp.AddHeader(content_type);
-}
-
-void ConnectionManager::StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const HttpResponse& resp) {
-  boost::asio::streambuf response;
-  std::ostream response_stream(&response);
-  
-  HttpEntity entity = resp.GetBody();
-  std::ifstream resp_file;
-  if (entity.OpenStream(&resp_file)) {
-    boost::asio::write(socket, boost::asio::buffer(resp.Serialize())); 
-    
-    char buff[512];
-    while (resp_file.read(buff, sizeof(buff)).gcount() > 0) {
-      boost::asio::write(socket, boost::asio::buffer(buff, resp_file.gcount()));
-    }
-
-    resp_file.close();
-  } else {
-    HttpResponse bad_req = ProcessBadRequest(FILE_NOT_FOUND);
-    boost::asio::write(socket, boost::asio::buffer(bad_req.Serialize()));
-  }
 }

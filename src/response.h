@@ -10,7 +10,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
+#include "http_consts.h"
 
 // Represents an HTTP response.
 //
@@ -23,16 +23,12 @@
 // Constructed by the RequestHandler, after which the server should call ToString
 // to serialize.
 
-const std::string HEADER_DELIMITER = "\r\n";
-const std::string BODY_DELIMITER = "\r\n";
-const std::string RESPONSE_DELIMITER = "\r\n\r\n";
-const std::string HEADER_KEY_VALUE_DELIMITER = ": ";
-const std::string VERSION = "HTTP/1.1";
 const std::string STATUS_LINE_DELIMITER = " ";
 
 class Response {
 public:
   using Headers = std::vector<std::pair<std::string, std::string>>;
+
   enum ResponseCode {
     OK = 200,
     MOVED_PERMANENTLY = 301,
@@ -43,15 +39,14 @@ public:
   
   void SetStatus(const ResponseCode response_code);
   void AddHeader(const std::string& header_name, const std::string& header_value);
-  void SetBody(const std::string& body);
-  
+  void SetBody(const std::string& body);  
   
   std::string ToString();
-  std::string serializeResponseCode();
-  
+  std::string SerializeResponseCode();  
 private:
   ResponseCode response_code_;
   Headers headers_;
   std::string body_;
 };
+
 #endif

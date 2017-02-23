@@ -13,17 +13,19 @@
 class BasicServerConfig : public ParsedConfig {
  public:
   BasicServerConfig(NginxConfig* config);
-  BasicServerConfig(){} // constructor for mocking purposes
+  BasicServerConfig() {} // constructor for mocking purposes
   bool Init();
 
   unsigned GetPortNumber();
   RequestHandler* GetRequestHandlerFromUri(std::string uri);
  private:
   unsigned port_number_;
-  std::map<std::string, std::unique_ptr<RequestHandler> > uri_to_request_handler_;
+  std::map<std::string, std::unique_ptr<RequestHandler>> uri_to_request_handler_;
   std::unique_ptr<RequestHandler> default_handler_;
 
-  std::unique_ptr<RequestHandler> BuildHandlerForUri(std::string uri, std::string handler_id, NginxConfig* child_block);
+  std::unique_ptr<RequestHandler> BuildHandlerForUri(std::string uri, 
+						     std::string handler_id, 
+						     NginxConfig* child_block);
   bool InitPortNumber(NginxConfig* config);
   bool InitRequestHandlers(NginxConfig* config);
 };
