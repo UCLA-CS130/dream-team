@@ -23,3 +23,11 @@ TEST(TokenizorTest, SimpleTokenize) {
     EXPECT_EQ(ser_tokenized[i], tokens[i]);
   }
 }
+
+TEST(NumberMatchesTest, MatchFunction){
+  std::string str1 = "asdmatches";
+  std::string str2 = "abcmat";
+  unsigned int expected = 1;
+  
+  EXPECT_EQ(expected, NumberMatches(str1, str2));
+}

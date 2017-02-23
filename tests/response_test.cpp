@@ -1,13 +1,6 @@
 #include "gtest/gtest.h"
 #include "../src/response.h"
 
-//const std::string HEADER_DELIMITER = "\r\n";
-//const std::string REQUEST_DELIMITER = "\r\n\r\n";
-//const std::string RESPONSE_DELIMITER = "\r\n\r\n";
-//const std::string HEADER_KEY_VALUE_DELIMITER = ": ";
-//const std::string BODY_DELIMITER = "\r\n";
-//const std::string VERSION = "HTTP/1.1";
-
 TEST(ResponseTest, ResponseSerialization) {
   std::string expectedResponse = "";
   const std::string version = "HTTP/1.1";
