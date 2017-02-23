@@ -1,5 +1,13 @@
+//
+//  request_test.cpp
+//  
+//
+//  Created by Brian Cho on 2/22/17.
+//
+//
+
 #include "gtest/gtest.h"
-#include "../src/response.h"
+#include "../src/request.h"
 
 //const std::string HEADER_DELIMITER = "\r\n";
 //const std::string REQUEST_DELIMITER = "\r\n\r\n";
@@ -8,15 +16,13 @@
 //const std::string BODY_DELIMITER = "\r\n";
 //const std::string VERSION = "HTTP/1.1";
 
-TEST(ResponseTest, ResponseSerialization) {
-  std::string expectedResponse = "";
+TEST(RequestTest, RequestGenericTest) {
+  const std::string method = "GET";
+  const std::string uri = "/fakePath/index.php";
   const std::string version = "HTTP/1.1";
-  const std::string status = "OK";
-  const std::string statusCode = "200";
-  Response::ResponseCode expectedResponseCode = Response::ResponseCode::OK;
   
-  expectedResponse += version + " " + statusCode + " " + status;
-  
+  const std::string req_line = method + " " + uri + " " + version;
+
   std::vector<std::pair<std::string, std::string>> headers;
   const std::string header1_key = "Content-Type";
   const std::string header1_value = "plain";
@@ -28,25 +34,22 @@ TEST(ResponseTest, ResponseSerialization) {
   headers.push_back(make_pair(header1_key, header1_value));
   headers.push_back(make_pair(header2_key, header2_value));
   
-  const std::string body = "<html></html>";
-  
-  Response* resp = new Response();
-  
-  resp->SetStatus(expectedResponseCode);
+  std::string headers_str = "";
   for(int i = 0; i < headers.size(); i++){
-    expectedResponse += HEADER_DELIMITER;
-    expectedResponse += headers[i].first + HEADER_KEY_VALUE_DELIMITER + headers[i].second;
-    
-    resp->AddHeader(headers[i].first, headers[i].second);
+    headers_str += HEADER_DELIMITER;
+    headers_str += headers[i].first + HEADER_KEY_VALUE_DELIMITER + headers[i].second;
   }
   
-  expectedResponse += RESPONSE_DELIMITER;
-  expectedResponse += body;
-  resp->SetBody(body);
+  const std::string body = "body";
+  const std::string ser_req = req_line + headers_str + REQUEST_DELIMITER + body + REQUEST_DELIMITER;
   
-  expectedResponse += RESPONSE_DELIMITER;
+  std::unique_ptr<Request> req = Request::Parse(ser_req);
   
-  EXPECT_EQ(expectedResponse, resp->ToString());
   
-  delete resp;
+  EXPECT_EQ(ser_req, req->raw_request());
+  EXPECT_EQ(method, req->method());
+  EXPECT_EQ(uri, req->uri());
+  EXPECT_EQ(version, req->version());
+  EXPECT_EQ(body, req->body());
+  
 }
