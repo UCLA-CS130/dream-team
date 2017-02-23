@@ -3,12 +3,20 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
+#include <map>
 #include <sstream>
 #include <fstream>
 #include <streambuf>
 #include "static_file_handler.h"
 #include "file_not_found_handler.h"
 #include "parsed_config.h"
+
+std::map<std::string, std::string> content_mapper =
+  {{"html", "text/html"},
+   {"jpg", "image/jpeg"},
+   {"png", "image/png"},
+   {"gif", "image/gif"},
+   {"htm", "text/html"}};
 
 RequestHandler::Status StaticFileHandler::Init(const std::string& uri_prefix,
 					       const NginxConfig& config) {
@@ -22,6 +30,16 @@ RequestHandler::Status StaticFileHandler::Init(const std::string& uri_prefix,
 
   return RequestHandler::OK;
 }
+
+std::string ExtractContentType(const std::string& uri) {
+  std::string extension = uri.substr(uri.find_last_of(".") + 1);
+  if (content_mapper.count(extension) > 0) {
+    return content_mapper[extension];
+  }
+  
+  return RequestHandler::TYPE_TEXT_PLAIN;
+}
+
 
 RequestHandler::Status StaticFileHandler::HandleRequest(const Request& request,
 							Response* response) {
@@ -38,7 +56,8 @@ RequestHandler::Status StaticFileHandler::HandleRequest(const Request& request,
   buff << file_stream.rdbuf();  
   std::string body = buff.str();
   
-  AttachTextPlainContentTypeHeader(response);
+  std::string content_type = ExtractContentType(internal_uri);
+  response->AddHeader(RequestHandler::CONTENT_TYPE_HEADER, content_type);
   response->SetStatus(Response::OK);
   response->SetBody(body);
   return RequestHandler::OK;

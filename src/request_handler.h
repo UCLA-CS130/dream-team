@@ -16,6 +16,9 @@ class RequestHandler {
     UNKNOWN_HANDLER = 2
   };
   
+  static const std::string CONTENT_TYPE_HEADER;
+  static const std::string TYPE_TEXT_PLAIN;
+ 
   // Initializes the handler. Returns a response code indicating success or
   // failure condition.
   // uri_prefix is the value in the config file that this handler will run for.
@@ -30,8 +33,7 @@ class RequestHandler {
   virtual Status HandleRequest(const Request& request,
 			       Response* response) = 0;
  protected:
-  std::string uri_prefix_;
-
+  std::string uri_prefix_; 
   void AttachTextPlainContentTypeHeader(Response* resp);
 };
 

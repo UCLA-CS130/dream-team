@@ -5,8 +5,8 @@
 
 #include "request_handler.h"
 
-const std::string CONTENT_TYPE_HEADER = "Content-Type";
-const std::string TYPE_TEXT_PLAIN = "text/plain";
+const std::string RequestHandler::CONTENT_TYPE_HEADER = "Content-Type";
+const std::string RequestHandler::TYPE_TEXT_PLAIN = "text/plain";
 
 void RequestHandler::AttachTextPlainContentTypeHeader(Response* resp) {
   resp->AddHeader(CONTENT_TYPE_HEADER, TYPE_TEXT_PLAIN);

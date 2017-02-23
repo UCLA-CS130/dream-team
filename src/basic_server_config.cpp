@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "echo_handler.h"
 #include "static_file_handler.h"
+#include "file_not_found_handler.h"
 
 #define PATH_NUM_TOKENS 3
 #define DEFAULT_NUM_TOKENS 2
@@ -18,7 +19,7 @@ const std::string ROOT_KEY = "root";
 
 const std::string HANDLER_ECHO_ID = "EchoHandler";
 const std::string HANDLER_STATIC_ID = "StaticHandler";
-const std::string HANDLER_NOT_FOUND_ID = "NotFoundHandler";
+const std::string HANDLER_NOT_FOUND_ID = "FileNotFoundHandler";
 
 BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config) {}
 
@@ -78,7 +79,12 @@ std::string BasicServerConfig::GetLongestMatchingUri(std::string client_uri) {
   unsigned max_matches = 0;
   std::string max_matches_path = "";
   for (std::string host_path : host_url_keys) {
-    unsigned matches = NumberMatches(host_path, client_uri);
+    // Count matches not including beginning slash
+    unsigned matches = NumberMatches(host_path, client_uri) - 1;
+    if (host_path == "/") {
+      matches = 1;
+    }
+
     if (matches > max_matches) {
       max_matches = matches;
       max_matches_path = host_path;
@@ -95,7 +101,7 @@ RequestHandler* BasicServerConfig::GetRequestHandlerFromUri(std::string uri) {
     return uri_to_request_handler_[host_uri].get();
   }
 
-  return nullptr;
+  return default_handler_.get();
 }
 
 std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::string uri, 
@@ -106,6 +112,8 @@ std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::strin
     handler = new EchoHandler();    
   } else if (handler_id == HANDLER_STATIC_ID) {
     handler = new StaticFileHandler();
+  } else if (handler_id == HANDLER_NOT_FOUND_ID) {
+    handler = new FileNotFoundHandler();
   }
   
   if (handler != nullptr) {
