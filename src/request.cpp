@@ -47,6 +47,7 @@ std::unique_ptr<Request> Request::Parse(const std::string& raw_request) {
       }
     } else {
       body = tokens[i];
+      break;
     }
   }
   
