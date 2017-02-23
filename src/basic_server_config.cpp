@@ -5,9 +5,6 @@
 
 #include "basic_server_config.h"
 #include "utils.h"
-#include "echo_handler.h"
-#include "static_file_handler.h"
-#include "file_not_found_handler.h"
 
 #define PATH_NUM_TOKENS 3
 #define DEFAULT_NUM_TOKENS 2
@@ -20,6 +17,7 @@ const std::string ROOT_KEY = "root";
 const std::string HANDLER_ECHO_ID = "EchoHandler";
 const std::string HANDLER_STATIC_ID = "StaticHandler";
 const std::string HANDLER_NOT_FOUND_ID = "FileNotFoundHandler";
+const std::string HANDLER_STATUS_ID = "StatusHandler";
 
 BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config) {}
 
@@ -43,9 +41,11 @@ bool BasicServerConfig::InitPortNumber(NginxConfig* config) {
 }
 
 bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
+  std::vector<StatusHandler::HandlerInfo> handler_descriptors;
+
   std::vector<std::shared_ptr<NginxConfigStatement>> location_matches = 
     FilterStatements(config, LOCATION_OBJ);
-  
+
   for (const auto& statement : location_matches) {
     if (statement->tokens_.size() >= PATH_NUM_TOKENS) {
       NginxConfig* path_child_block = statement->child_block_.get();
@@ -53,6 +53,11 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
       std::string handler_id = statement->tokens_[2];
       
       uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, path_child_block);
+      
+      StatusHandler::HandlerInfo h_info;
+      h_info.prefix = uri;
+      h_info.id = handler_id;
+      handler_descriptors.push_back(h_info);
     }    
   }
 
@@ -64,9 +69,18 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
       NginxConfig* default_child_block = statement->child_block_.get();
       std::string handler_id = statement->tokens_[1];
       default_handler_ = BuildHandlerForUri("", handler_id, default_child_block);
+      
+      StatusHandler::HandlerInfo h_info;
+      h_info.prefix = "";
+      h_info.id = handler_id;
+      handler_descriptors.push_back(h_info);
     }    
   }
   
+  for (StatusHandler* handler : status_handlers_) {
+    handler->UpdateRequestHandlers(handler_descriptors);
+  }
+
   return true;
 }
 
@@ -114,6 +128,9 @@ std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::strin
     handler = new StaticFileHandler();
   } else if (handler_id == HANDLER_NOT_FOUND_ID) {
     handler = new FileNotFoundHandler();
+  } else if (handler_id == HANDLER_STATUS_ID) {
+    handler = new StatusHandler();
+    status_handlers_.push_back((StatusHandler*) handler);
   }
   
   if (handler != nullptr) {
@@ -121,6 +138,12 @@ std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::strin
   }
 
   return std::unique_ptr<RequestHandler>(handler);
+}
+
+void BasicServerConfig::UpdateStatusHandlers(const Request& req, const Response& resp) {
+  for (StatusHandler* handler : status_handlers_) {
+    handler->UpdateStats(req, resp.GetStatus());
+  }
 }
 
 unsigned BasicServerConfig::GetPortNumber() {

@@ -51,3 +51,7 @@ std::string Response::ToString() const {
   
   return serialized_output;
 }
+
+Response::ResponseCode Response::GetStatus() const {
+  return response_code_;
+}
