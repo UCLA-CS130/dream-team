@@ -8,6 +8,7 @@
 
 #include <map>
 #include "parsed_config.h"
+#include "traffic_monitor.h"
 #include "request_handler.h"
 #include "status_handler.h"
 #include "echo_handler.h"
@@ -20,6 +21,7 @@ class BasicServerConfig : public ParsedConfig {
   BasicServerConfig() {} // constructor for mocking purposes
 
   bool Init();
+  void RegisterTrafficMonitor(TrafficMonitor* monitor);
   void UpdateStatusHandlers(const Request& req, const Response& resp);
 
   unsigned GetPortNumber();
@@ -29,7 +31,7 @@ class BasicServerConfig : public ParsedConfig {
 
   std::map<std::string, std::unique_ptr<RequestHandler>> uri_to_request_handler_;
   std::unique_ptr<RequestHandler> default_handler_;
-  std::vector<StatusHandler*> status_handlers_;
+  TrafficMonitor* traffic_monitor_ = nullptr;
 
   bool InitPortNumber(NginxConfig* config);
   bool InitRequestHandlers(NginxConfig* config);

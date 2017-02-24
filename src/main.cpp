@@ -31,8 +31,9 @@ int main(int argc, char* argv[]) {
     std::cerr << "Invalid config file syntax" << std::endl;
     return 1;
   }
-
+  
   BasicServerConfig parsed_config(&config);
+  parsed_config.RegisterTrafficMonitor(&TrafficMonitor::Get());
   if (!parsed_config.Init() || !isParsedConfigValid(&parsed_config)) {
     std::cerr << "Invalid config file option values" << std::endl;
     return 1;

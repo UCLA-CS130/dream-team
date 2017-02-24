@@ -17,4 +17,6 @@ class EchoHandler : public RequestHandler {
 					       Response* response) override;
 };
 
+REGISTER_REQUEST_HANDLER(EchoHandler);
+
 #endif

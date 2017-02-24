@@ -10,24 +10,15 @@
 #include "request_handler.h"
 
 class StatusHandler : public RequestHandler {
- public:
-  struct HandlerInfo {
-    std::string prefix;
-    std::string id;
-  };
-
+ public:  
   virtual RequestHandler::Status Init(const std::string& uri_prefix,
 				      const NginxConfig& config) override;
   
   virtual RequestHandler::Status HandleRequest(const Request& request,
 					       Response* response) override;
-
-  void UpdateStats(const Request& req, Response::ResponseCode resp_code);
-  void UpdateRequestHandlers(const std::vector<HandlerInfo>& handler_paths);
- private:
-  std::map<std::string, std::map<Response::ResponseCode, unsigned>>
-    url_stat_tracker_;
-  std::vector<StatusHandler::HandlerInfo> handler_paths_;
 };
+
+
+REGISTER_REQUEST_HANDLER(StatusHandler);
 
 #endif

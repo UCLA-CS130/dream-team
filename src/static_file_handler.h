@@ -19,4 +19,6 @@ class StaticFileHandler : public RequestHandler {
   std::string root_uri_;
 };
 
+REGISTER_REQUEST_HANDLER(StaticFileHandler);
+
 #endif

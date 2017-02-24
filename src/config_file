@@ -1,6 +1,6 @@
 port 2020;
 
-path / StaticHandler {
+path / StaticFileHandler {
      root tests/test_file_dir/;
 }
 

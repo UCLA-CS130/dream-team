@@ -26,7 +26,6 @@ bool BasicServerConfig::Init() {
   bool init_status = 
     InitPortNumber(root_config) &&
     InitRequestHandlers(root_config);
-
   return init_status;
 }
 
@@ -41,7 +40,7 @@ bool BasicServerConfig::InitPortNumber(NginxConfig* config) {
 }
 
 bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
-  std::vector<StatusHandler::HandlerInfo> handler_descriptors;
+  std::vector<TrafficMonitor::HandlerInfo> handler_descriptors;
 
   std::vector<std::shared_ptr<NginxConfigStatement>> location_matches = 
     FilterStatements(config, LOCATION_OBJ);
@@ -54,7 +53,7 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
       
       uri_to_request_handler_[uri] = BuildHandlerForUri(uri, handler_id, path_child_block);
       
-      StatusHandler::HandlerInfo h_info;
+      TrafficMonitor::HandlerInfo h_info;
       h_info.prefix = uri;
       h_info.id = handler_id;
       handler_descriptors.push_back(h_info);
@@ -70,18 +69,22 @@ bool BasicServerConfig::InitRequestHandlers(NginxConfig* config) {
       std::string handler_id = statement->tokens_[1];
       default_handler_ = BuildHandlerForUri("", handler_id, default_child_block);
       
-      StatusHandler::HandlerInfo h_info;
+      TrafficMonitor::HandlerInfo h_info;
       h_info.prefix = "";
       h_info.id = handler_id;
       handler_descriptors.push_back(h_info);
     }    
   }
   
-  for (StatusHandler* handler : status_handlers_) {
-    handler->UpdateRequestHandlers(handler_descriptors);
+  if (traffic_monitor_ != nullptr) {
+    traffic_monitor_->SetHandlerPaths(handler_descriptors);
   }
 
   return true;
+}
+
+void BasicServerConfig::RegisterTrafficMonitor(TrafficMonitor* monitor) {
+  traffic_monitor_ = monitor;
 }
 
 std::string BasicServerConfig::GetLongestMatchingUri(std::string client_uri) {
@@ -121,18 +124,7 @@ RequestHandler* BasicServerConfig::GetRequestHandlerFromUri(std::string uri) {
 std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::string uri, 
 								      std::string handler_id, 
 								      NginxConfig* child_block) {
-  RequestHandler* handler = nullptr;
-  if (handler_id == HANDLER_ECHO_ID) {
-    handler = new EchoHandler();    
-  } else if (handler_id == HANDLER_STATIC_ID) {
-    handler = new StaticFileHandler();
-  } else if (handler_id == HANDLER_NOT_FOUND_ID) {
-    handler = new FileNotFoundHandler();
-  } else if (handler_id == HANDLER_STATUS_ID) {
-    handler = new StatusHandler();
-    status_handlers_.push_back((StatusHandler*) handler);
-  }
-  
+  RequestHandler* handler = RequestHandler::CreateByName(handler_id);  
   if (handler != nullptr) {
     handler->Init(uri, *child_block);
   }
@@ -141,8 +133,8 @@ std::unique_ptr<RequestHandler> BasicServerConfig::BuildHandlerForUri(std::strin
 }
 
 void BasicServerConfig::UpdateStatusHandlers(const Request& req, const Response& resp) {
-  for (StatusHandler* handler : status_handlers_) {
-    handler->UpdateStats(req, resp.GetStatus());
+  if (traffic_monitor_ != nullptr) {
+    traffic_monitor_->UpdateStats(req, resp.GetStatus());
   }
 }
 

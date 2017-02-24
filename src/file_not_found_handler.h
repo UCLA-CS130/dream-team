@@ -17,4 +17,6 @@ class FileNotFoundHandler : public RequestHandler {
 					       Response* response) override;  
 };
 
+REGISTER_REQUEST_HANDLER(FileNotFoundHandler);
+
 #endif
