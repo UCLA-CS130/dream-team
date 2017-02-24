@@ -24,14 +24,10 @@ TEST(TokenizorTest, SimpleTokenize) {
   }
 }
 
-TEST(UriTest, SimpleUri) {
-  const std::string uri = "/index.html";
-  std::string uri_start = GetUriStart(uri);
-  EXPECT_EQ(uri_start, "/index.html");
-}
-
-TEST(UriTest, MultipleSlashUri) {
-  const std::string uri = "/my_dir/index.html";
-  std::string uri_start = GetUriStart(uri);
-  EXPECT_EQ(uri_start, "/my_dir");
+TEST(NumberMatchesTest, MatchFunction){
+  std::string str1 = "asdmatches";
+  std::string str2 = "abcmat";
+  unsigned int expected = 1;
+  
+  EXPECT_EQ(expected, NumberMatches(str1, str2));
 }

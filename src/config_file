@@ -1,14 +1,11 @@
-server {
-  listen 6673;
+port 2020;
 
-  location /static {
-      root /home/usama/workspace/;
-  }
-  
-  location / {
-      root tests/test_file_dir/;
-  }
+path / StaticHandler {
+     root tests/test_file_dir;
+}
 
-  echo /echo;
-} 
+path /echo EchoHandler {}
 
+path /status StatusHandler {}
+
+default NotFoundHandler {}

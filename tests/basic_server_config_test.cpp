@@ -3,34 +3,37 @@
 #include "gtest/gtest.h"
 #include "../src/basic_server_config.h"
 
+
 class BasicServerConfigTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
   NginxConfig out_config_; 
   BasicServerConfig* basic_server_config_;
 
-  void CreateBasicServerConfig(const std::string config_string) {
+  bool CreateBasicServerConfig(const std::string config_string) {
     std::stringstream config_stream(config_string);
-    parser_.Parse(&config_stream, &out_config_);
+
+    if (!parser_.Parse(&config_stream, &out_config_)) {
+      return false;
+    }
+
     basic_server_config_ = new BasicServerConfig(&out_config_);
+    return true;
   }
 };
 
 TEST_F(BasicServerConfigTest, BasicConfigTest) {
-  CreateBasicServerConfig("server {\n\tlisten 2020;\n}\n");
-  EXPECT_FALSE(basic_server_config_->Init()); // this is no more considered a complete config
+  bool did_parse = CreateBasicServerConfig("port 2020;\npath /echo EchoHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n");
+  
+  EXPECT_TRUE(did_parse);
+  EXPECT_TRUE(basic_server_config_->Init());
   EXPECT_EQ(2020, basic_server_config_->GetPortNumber());
 }
 
 TEST_F(BasicServerConfigTest, InvalidConfigTest) {
-  CreateBasicServerConfig("server 2020; }");
-  EXPECT_FALSE(basic_server_config_->Init());
-}
-
-TEST_F(BasicServerConfigTest, MultilineConfigTest) { 
-  CreateBasicServerConfig("server {\n\tlisten 2020;\n\techo /echo;\n\tlocation / {\n\t root tests/test_file_dir/;\n\t}\n}\n");
-  EXPECT_TRUE(basic_server_config_->Init());
-  EXPECT_EQ(2020, basic_server_config_->GetPortNumber());
-  EXPECT_EQ("/echo", basic_server_config_->GetEchoPath());
-  EXPECT_EQ("tests/test_file_dir/", basic_server_config_->MapUserToHostUrl("/"));
+  bool did_parse = CreateBasicServerConfig("server 2020; }");
+  
+  EXPECT_FALSE(did_parse);
+  if(did_parse)
+    EXPECT_FALSE(basic_server_config_->Init());
 }

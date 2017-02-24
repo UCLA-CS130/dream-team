@@ -11,11 +11,11 @@
 
 #include <string>
 #include <vector>
-#include "http_request.h"
 
-// parses a string by delimeter
+// Splits a string by delimiter and sends tokenized output to tokens
 void tokenize(const std::string &in, std::vector<std::string> &tokens,
               const std::string &delimeter = " ");
-HttpRequest parse_message(std::string raw_message);
-std::string GetUriStart(std::string uri);
+
+unsigned NumberMatches(const std::string s1, const std::string s2);
+
 #endif /* Utils_h */

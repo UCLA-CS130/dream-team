@@ -3,8 +3,8 @@
 
 ParsedConfig::ParsedConfig(NginxConfig* config) : config_(config) {}
 
-std::vector<std::shared_ptr<NginxConfigStatement>> ParsedConfig::FilterStatements(NginxConfig* root, 
-									      std::string search_statement) {
+std::vector<std::shared_ptr<NginxConfigStatement>> ParsedConfig::FilterStatements(const NginxConfig* root, 
+										  std::string search_statement) {
   std::vector<std::shared_ptr<NginxConfigStatement>> matching_statements;
   for (const auto&  statement : root->statements_) {
     std::string statement_name = statement->tokens_[0];
@@ -17,7 +17,8 @@ std::vector<std::shared_ptr<NginxConfigStatement>> ParsedConfig::FilterStatement
   return matching_statements;
 }
 
-std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, const std::string search_statement) {
+std::vector<std::string> ParsedConfig::GetStatementValues(const NginxConfig* root, 
+							  const std::string search_statement) {
   std::vector<std::shared_ptr<NginxConfigStatement>> matches = FilterStatements(root, search_statement);
   std::vector<std::string> out;
   for (const auto& statement : matches) {
@@ -30,7 +31,8 @@ std::vector<std::string> ParsedConfig::GetStatementValues(NginxConfig* root, con
   return out;
 }
 
-std::string ParsedConfig::GetStatementValue(NginxConfig* root, const std::string search_statement) {
+std::string ParsedConfig::GetStatementValue(const NginxConfig* root, 
+					    const std::string search_statement) {
   if (root == nullptr) {
     return "";
   }

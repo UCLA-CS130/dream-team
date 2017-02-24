@@ -9,10 +9,12 @@ class ParsedConfig {
 public:
   ParsedConfig() {}
   ParsedConfig(NginxConfig* config);
-  std::vector<std::shared_ptr<NginxConfigStatement>> FilterStatements(NginxConfig* root, 
+  std::vector<std::shared_ptr<NginxConfigStatement>> FilterStatements(const NginxConfig* root, 
 								      std::string search_statement);
-  std::vector<std::string> GetStatementValues(NginxConfig* root, const std::string search_statement);
-  std::string GetStatementValue(NginxConfig* root, const std::string search_statement);
+  std::vector<std::string> GetStatementValues(const NginxConfig* root, 
+					      const std::string search_statement);
+  std::string GetStatementValue(const NginxConfig* root, 
+				const std::string search_statement);
   NginxConfig* GetConfig();
 private:
   NginxConfig* config_;
