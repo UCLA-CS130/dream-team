@@ -8,7 +8,7 @@
 #include <fstream>
 #include <streambuf>
 #include "static_handler.h"
-#include "file_not_found_handler.h"
+#include "not_found_handler.h"
 #include "parsed_config.h"
 
 std::map<std::string, std::string> content_mapper =
@@ -52,7 +52,7 @@ RequestHandler::Status StaticHandler::HandleRequest(const Request& request,
 
   std::ifstream file_stream(internal_uri);
   if (!file_stream.good()) {
-    FileNotFoundHandler not_found_handler;
+    NotFoundHandler not_found_handler;
     return not_found_handler.HandleRequest(request, response);
   }
 

@@ -1,14 +1,14 @@
 #include <sstream>
 #include <string>
 #include "gtest/gtest.h"
-#include "../src/file_not_found_handler.h"
+#include "../src/not_found_handler.h"
 #include "../src/nginx-configparser/config_parser.h"
 
 class FileNotFoundHandlerTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
   NginxConfig config_; 
-  FileNotFoundHandler* file_not_found_handler_;
+  NotFoundHandler* file_not_found_handler_;
 
   bool CreateFileNotFoundHandlerTest(const std::string config_string) {
     std::stringstream config_stream(config_string);
@@ -17,7 +17,7 @@ protected:
       return false;
     }
 
-    file_not_found_handler_ = new FileNotFoundHandler();
+    file_not_found_handler_ = new NotFoundHandler();
     return true;
   }
 

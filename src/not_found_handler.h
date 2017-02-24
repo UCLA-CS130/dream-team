@@ -3,12 +3,12 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#ifndef FileNotFoundHandler_h
-#define FileNotFoundHandler_h
+#ifndef NotFoundHandler_h
+#define NotFoundHandler_h
 
 #include "request_handler.h"
 
-class FileNotFoundHandler : public RequestHandler {
+class NotFoundHandler : public RequestHandler {
  public:
   virtual RequestHandler::Status Init(const std::string& uri_prefix,
 				      const NginxConfig& config) override;
@@ -17,6 +17,6 @@ class FileNotFoundHandler : public RequestHandler {
 					       Response* response) override;  
 };
 
-REGISTER_REQUEST_HANDLER(FileNotFoundHandler);
+REGISTER_REQUEST_HANDLER(NotFoundHandler);
 
 #endif
