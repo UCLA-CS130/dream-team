@@ -88,35 +88,3 @@ TEST_F(StatusHandlerTest, BasicStatusHandlerTest) {
 
   EXPECT_EQ(expectedResponse, resp.ToString());
 }
-
-TEST_F(StatusHandlerTest, ComplexStatusHandlerTest) {
-  bool did_parse = CreateStatusHandlerTest("port 2020;\npath /echo EchoHandler {}\npath /status StatusHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n}\ndefault NotFoundHandler {}\n");
-  EXPECT_TRUE(did_parse);
-  EXPECT_EQ(0, status_handler_->Init("/status", config_));
-  
-  Request req = CreateStatusTestRequest(); 
-  Response resp[5];
-
-  for (int i = 0; i < 5; i++) {
-    EXPECT_EQ(0, status_handler_->HandleRequest(req, &resp[i]));
-    parsed_config_.UpdateStatusHandlers(req, resp[i]);
-  }
-
-  std::string expectedResponse = "";
-  const std::string version = "HTTP/1.1";
-  const std::string statusCode = "200";
-  const std::string status = "OK";
-   
-  expectedResponse += version + " " + statusCode + " " + status + "\r\n";
-
-  const std::string headerContent = "Content-Type: text/plain" ;
-
-  expectedResponse += headerContent + RESPONSE_DELIMITER;
-
-  std::string body = "---Request Handlers---\n";
-  body += "\n---Site Traffic---\n";
-
-  expectedResponse += body;
-
-  EXPECT_EQ(expectedResponse, resp[4].ToString());
-}
