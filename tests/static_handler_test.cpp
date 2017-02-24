@@ -8,7 +8,7 @@ class StaticHandlerTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
   NginxConfig config_;
-  StaticFileHandler* static_file_handler;
+  StaticHandler* static_file_handler;
   const std::string body = "<html>\n\n<head>\n<title>A very simple webpage</title>\n<basefont size=4>\n</head>\n\n<body>\nHere is some content\n</body>\n\n</html>\n";
   
   bool CreateStaticHandlerTest(const std::string config_string) {

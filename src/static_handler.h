@@ -3,12 +3,12 @@
 // Copyright © 2017 Riaz. All rights reserved.
 //
 
-#ifndef StaticFileHandler_h
-#define StaticFileHandler_h
+#ifndef StaticHandler_h
+#define StaticHandler_h
 
 #include "request_handler.h"
 
-class StaticFileHandler : public RequestHandler {
+class StaticHandler : public RequestHandler {
  public:
   virtual RequestHandler::Status Init(const std::string& uri_prefix,
 				      const NginxConfig& config) override;
@@ -19,6 +19,6 @@ class StaticFileHandler : public RequestHandler {
   std::string root_uri_;
 };
 
-REGISTER_REQUEST_HANDLER(StaticFileHandler);
+REGISTER_REQUEST_HANDLER(StaticHandler);
 
 #endif

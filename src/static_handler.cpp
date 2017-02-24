@@ -18,7 +18,7 @@ std::map<std::string, std::string> content_mapper =
    {"gif", "image/gif"},
    {"htm", "text/html"}};
 
-RequestHandler::Status StaticFileHandler::Init(const std::string& uri_prefix,
+RequestHandler::Status StaticHandler::Init(const std::string& uri_prefix,
 					       const NginxConfig& config) {
   uri_prefix_ = uri_prefix;
   
@@ -45,7 +45,7 @@ std::string ExtractContentType(const std::string& uri) {
 }
 
 
-RequestHandler::Status StaticFileHandler::HandleRequest(const Request& request,
+RequestHandler::Status StaticHandler::HandleRequest(const Request& request,
 							Response* response) {
   std::string client_uri = request.uri();
   std::string internal_uri = client_uri.replace(0, uri_prefix_.length(), root_uri_);  

@@ -15,7 +15,7 @@ TEST_CLASSES = 	src/connection_manager.cpp \
 		src/request.cpp \
 		src/response.cpp \
 		src/echo_handler.cpp \
-		src/static_file_handler.cpp \
+		src/static_handler.cpp \
 		src/file_not_found_handler.cpp \
 		src/request_handler.cpp \
 		src/status_handler.cpp \
