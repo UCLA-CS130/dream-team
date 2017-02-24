@@ -54,3 +54,7 @@ std::string Response::ToString() const {
 Response::ResponseCode Response::GetStatus() const {
   return response_code_;
 }
+
+std::string Response::GetBody() const {
+  return body_;
+}
