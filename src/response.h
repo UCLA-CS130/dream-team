@@ -40,9 +40,10 @@ public:
   void SetStatus(const ResponseCode response_code);
   void AddHeader(const std::string& header_name, const std::string& header_value);
   void SetBody(const std::string& body);  
-  
+  std::string GetBody() const;
+
   std::string ToString() const;
-  std::string SerializeResponseCode() const;  
+  std::string SerializeResponseCode() const;
   ResponseCode GetStatus() const;
 private:
   ResponseCode response_code_;
