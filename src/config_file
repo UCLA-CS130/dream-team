@@ -1,7 +1,7 @@
 port 2020;
 
 path / StaticFileHandler {
-     root tests/test_file_dir/;
+     root tests/test_file_dir;
 }
 
 path /echo EchoHandler {}
