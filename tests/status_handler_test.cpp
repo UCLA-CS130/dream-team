@@ -2,6 +2,7 @@
 #include <string>
 #include "gtest/gtest.h"
 #include "../src/status_handler.h"
+#include "../src/basic_server_config.h"
 #include "../src/nginx-configparser/config_parser.h"
 
 class StatusHandlerTest : public ::testing::Test {
@@ -9,6 +10,7 @@ protected:
   NginxConfigParser parser_;
   NginxConfig config_; 
   StatusHandler* status_handler_;
+  BasicServerConfig parsed_config_;
 
   bool CreateStatusHandlerTest(const std::string config_string) {
     std::stringstream config_stream(config_string);
@@ -17,6 +19,12 @@ protected:
       return false;
     }
 
+    BasicServerConfig parsed_config_(&config_);
+    if (!parsed_config_.Init()) {
+      return false;
+    }
+
+    parsed_config_.RegisterTrafficMonitor(&TrafficMonitor::Get());
     status_handler_ = new StatusHandler();
     return true;
   }
@@ -79,4 +87,36 @@ TEST_F(StatusHandlerTest, BasicStatusHandlerTest) {
   expectedResponse += body;
 
   EXPECT_EQ(expectedResponse, resp.ToString());
+}
+
+TEST_F(StatusHandlerTest, ComplexStatusHandlerTest) {
+  bool did_parse = CreateStatusHandlerTest("port 2020;\npath /echo EchoHandler {}\npath /status StatusHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n}\ndefault NotFoundHandler {}\n");
+  EXPECT_TRUE(did_parse);
+  EXPECT_EQ(0, status_handler_->Init("/status", config_));
+  
+  Request req = CreateStatusTestRequest(); 
+  Response resp[5];
+
+  for (int i = 0; i < 5; i++) {
+    EXPECT_EQ(0, status_handler_->HandleRequest(req, &resp[i]));
+    parsed_config_.UpdateStatusHandlers(req, resp[i]);
+  }
+
+  std::string expectedResponse = "";
+  const std::string version = "HTTP/1.1";
+  const std::string statusCode = "200";
+  const std::string status = "OK";
+   
+  expectedResponse += version + " " + statusCode + " " + status + "\r\n";
+
+  const std::string headerContent = "Content-Type: text/plain" ;
+
+  expectedResponse += headerContent + RESPONSE_DELIMITER;
+
+  std::string body = "---Request Handlers---\n";
+  body += "\n---Site Traffic---\n";
+
+  expectedResponse += body;
+
+  EXPECT_EQ(expectedResponse, resp[4].ToString());
 }
