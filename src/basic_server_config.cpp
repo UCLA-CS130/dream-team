@@ -16,7 +16,7 @@ const std::string ROOT_KEY = "root";
 
 const std::string HANDLER_ECHO_ID = "EchoHandler";
 const std::string HANDLER_STATIC_ID = "StaticHandler";
-const std::string HANDLER_NOT_FOUND_ID = "FileNotFoundHandler";
+const std::string HANDLER_NOT_FOUND_ID = "NotFoundHandler";
 const std::string HANDLER_STATUS_ID = "StatusHandler";
 
 BasicServerConfig::BasicServerConfig(NginxConfig* config) : ParsedConfig(config) {}
