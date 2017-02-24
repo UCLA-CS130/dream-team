@@ -12,7 +12,7 @@
 #include "request_handler.h"
 #include "status_handler.h"
 #include "echo_handler.h"
-#include "static_file_handler.h"
+#include "static_handler.h"
 #include "file_not_found_handler.h"
 
 class BasicServerConfig : public ParsedConfig {

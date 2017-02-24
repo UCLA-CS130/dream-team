@@ -7,7 +7,7 @@
 #include <sstream>
 #include <fstream>
 #include <streambuf>
-#include "static_file_handler.h"
+#include "static_handler.h"
 #include "file_not_found_handler.h"
 #include "parsed_config.h"
 
