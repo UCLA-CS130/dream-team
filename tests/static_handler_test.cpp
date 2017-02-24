@@ -1,7 +1,7 @@
 #include <sstream>
 #include <string>
 #include "gtest/gtest.h"
-#include "../src/static_file_handler.h"
+#include "../src/static_handler.h"
 #include "../src/nginx-configparser/config_parser.h"
 
 class StaticHandlerTest : public ::testing::Test {
@@ -9,7 +9,7 @@ protected:
   NginxConfigParser parser_;
   NginxConfig config_;
   StaticHandler* static_file_handler;
-  const std::string body = "<html>\n\n<head>\n<title>A very simple webpage</title>\n<basefont size=4>\n</head>\n\n<body>\nHere is some content\n</body>\n\n</html>\n";
+  const std::string body = "<html>\n\n<head>\n  <title>A very simple webpage</title>\n  <basefont size=4>\n</head>\n\n<body>\n  Here is some content\n</body>\n\n</html>\n";
   
   bool CreateStaticHandlerTest(const std::string config_string) {
     std::stringstream config_stream(config_string);
@@ -18,7 +18,7 @@ protected:
       return false;
     }
     
-    static_file_handler = new StaticFileHandler();
+    static_file_handler = new StaticHandler();
     return true;
   }
   
@@ -53,9 +53,9 @@ protected:
 };
 
 TEST_F(StaticHandlerTest, BasicStaticHandlerTest) {
-  bool did_parse = CreateStaticHandlerTest("port 2020;\npath /static StaticFileHandler {\nroot tests/test_file_dir;\n}\npath /echo EchoHandler {}\ndefault NotFoundHandler {}\n");
+  bool did_parse = CreateStaticHandlerTest("port 2020;\npath / StaticFileHandler {\nroot tests/test_file_dir;\n}\npath /echo EchoHandler {}\ndefault NotFoundHandler {}\n");
   EXPECT_TRUE(did_parse);
-  EXPECT_EQ(0, static_file_handler->Init("/", config_));
+  EXPECT_EQ(0, static_file_handler->Init("/", *(config_.statements_[1]->child_block_.get())));
   
   Request req = CreateStaticTestRequest();
   Response resp;
