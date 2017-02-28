@@ -19,6 +19,7 @@ TEST_CLASSES = 	src/connection_manager.cpp \
 		src/not_found_handler.cpp \
 		src/request_handler.cpp \
 		src/status_handler.cpp \
+		src/proxy_handler.cpp \
 		src/traffic_monitor.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(NGINX_DIR)/config_parser.cc $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
