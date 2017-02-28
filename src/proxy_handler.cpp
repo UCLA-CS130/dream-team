@@ -2,6 +2,8 @@
 // Created by Michael Chen on 2/28/17.
 // Copyright © 2017 Chen. All rights reserved.
 //
+//ProxyHandler code for generating new request and capturing response is modeled off of
+//http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/example/cpp03/http/client/sync_client.cpp
 
 #include "proxy_handler.h"
 #include "parsed_config.h"
@@ -53,16 +55,16 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     // Form the request. We specify the "Connection: close" header so that the
     // server will close the socket after transmitting the response. This will
     // allow us to treat all data up until the EOF as the content.
-    boost::asio::streambuf request;
-    std::ostream request_stream(&request);
+    boost::asio::streambuf request_;
+    std::ostream request_stream(&request_);
     //TODO: Change to "/"
-    request_stream << "GET /LICENSE_1_0.txt HTTP/1.0\r\n";
+    request_stream << "GET /doc/libs/1_63_0/more/getting_started/index.html HTTP/1.0\r\n";
     request_stream << "Host: " << proxy_host_ << "\r\n";
     request_stream << "Accept: */*\r\n";
     request_stream << "Connection: close\r\n\r\n";
 
     // Send the request.
-    boost::asio::write(socket, request);
+    boost::asio::write(socket, request_);
 
     // Read the response status line. The response streambuf will automatically
     // grow to accommodate the entire line. The growth may be limited by passing
@@ -97,7 +99,6 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       std::vector<std::string> header_token;
       tokenize(header, header_token, HEADER_KEY_VALUE_DELIMITER);
       response->AddHeader(header_token[0], header_token[1]);
-      std::cout << "Header: " << header_token[0] << "Value: " << header_token[1] << std::endl;
     }
     std::cout << "\n";
 
@@ -120,7 +121,11 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       throw boost::system::system_error(error);
 
     response->SetBody(body_);
-    std::cout << "BODY: " << response->GetBody() << std::endl;
+    std::string length;
+    std::ostringstream temp;
+    temp  <<  ((int) body_.size());
+    length = temp.str();
+    response->AddHeader("Content-Length", length);
   }
   catch (std::exception& e) {
     std::cout << "Exception: " << e.what() << "\n";
