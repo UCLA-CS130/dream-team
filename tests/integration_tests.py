@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os, sys, subprocess, time, httplib, urllib
+import socket
 
 # Dynamically creates a config file for the test
 
@@ -60,6 +61,36 @@ def is_echo_valid(port, response, request_type, request_resource):
     return check_status_line(response) and check_resp_headers(response) \
            and check_resp_body(port, response, request_type, request_resource)
 
+def test_echo(port_number, request_type, request_resource):
+    response = send_request(port_number, request_type, request_resource)        
+    return is_echo_valid(port_number, response, request_type, request_resource)
+
+def test_multithreaded_connections(port_number):
+    TCP_IP = '127.0.0.1'
+    TCP_PORT = port_number
+    BUFFER_SIZE = 1024
+    MESSAGE_START = 'GET /rand '
+    MESSAGE_END = 'HTTP/1.1\r\n\r\n'
+    
+    s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s1.connect((TCP_IP, TCP_PORT))
+    s1.send(MESSAGE_START)
+
+    s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s2.connect((TCP_IP, TCP_PORT))
+    s2.send(MESSAGE_START + MESSAGE_END)
+
+    d2 = s2.recv(BUFFER_SIZE)
+    s2.close()
+    print("Received data for second request")
+
+    s1.send(MESSAGE_END)
+    d1 = s1.recv(BUFFER_SIZE)
+    s1.close()
+    print("Received data for first request")
+
+    return d1 == d2
+
 def main():
     port_number = '12397'
     test_fname = 'integration_test_config'
@@ -81,19 +112,24 @@ def main():
     #request_headers = {}
 
     try:
-        response = send_request(port_number, request_type, request_resource)        
-        if is_echo_valid(port_number, response, request_type, request_resource):
-            print("Valid echo")
-            sys.exit(0)
-        else:
+        if not test_echo(port_number, request_type, request_resource):
             print("Invalid echo")
             sys.exit(1)
+        else:
+            print("Valid echo")
+        
+        if not test_multithreaded_connections(int(port_number)):
+            print("Invalid connection order")
+            sys.exit(1)
+        else:
+            print("Valid connection order")
     except httplib.HTTPException as err:
         print err.reason
         sys.exit(1)
     finally:
-#        os.remove(path_to_config_file)
         running_server.kill()
+    
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
