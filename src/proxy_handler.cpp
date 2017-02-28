@@ -37,8 +37,6 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
   try {
     std::cout << "Host: " << proxy_host_ << std::endl;
     std::cout << "Port: " << proxy_port_ << std::endl;
-    proxy_host_ = "www.boost.org";
-    proxy_port_ = "http";
     std::string body_;
 
     boost::asio::io_service io_service;
@@ -58,7 +56,7 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
     //TODO: Change to "/"
-    request_stream << "GET /doc/libs/1_63_0/more/getting_started/index.html HTTP/1.0\r\n";
+    request_stream << "GET / HTTP/1.0\r\n";
     request_stream << "Host: " << proxy_host_ << "\r\n";
     request_stream << "Accept: */*\r\n";
     request_stream << "Connection: close\r\n\r\n";
