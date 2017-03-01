@@ -14,6 +14,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include "utils.h"
+#include <boost/regex.hpp>
 
 RequestHandler::Status ProxyHandler::Init(const std::string& uri_prefix,
 					 const NginxConfig& config) {
@@ -55,8 +56,19 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     // allow us to treat all data up until the EOF as the content.
     boost::asio::streambuf request_;
     std::ostream request_stream(&request_);
+    std::string redirect_uri;
+    std::string orig_uri = request.uri();
+    if (uri_prefix_.size() == 1) {
+      redirect_uri = orig_uri;
+    }
+    else {
+      if (uri_prefix_.size() + 1 >= orig_uri.size())
+        redirect_uri = "/";
+      else 
+        redirect_uri = orig_uri.substr(uri_prefix_.size());
+    }
     //TODO: Change to "/"
-    request_stream << "GET / HTTP/1.0\r\n";
+    request_stream << "GET " + redirect_uri + " HTTP/1.0\r\n";
     request_stream << "Host: " << proxy_host_ << "\r\n";
     request_stream << "Accept: */*\r\n";
     request_stream << "Connection: close\r\n\r\n";
@@ -122,7 +134,15 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
 
     if (error != boost::asio::error::eof)
       throw boost::system::system_error(error);
-
+    if (uri_prefix_.size() > 1) { 
+      boost::regex r("src\\s*=\\s*\"((?!http)[^\"]*)\"");
+      std::string fmt = "src=\"" + uri_prefix_ + "\\1\"";
+      boost::regex r2("href\\s*=\\s*\"((?!http)[^\"]*)\"");
+      std::string fmt2 = "href=\"" + uri_prefix_ + "\\1\"";
+      std::string replaced  = boost::regex_replace(body_, r, fmt, boost::match_default | boost::format_sed);
+      body_ = boost::regex_replace(replaced, r2, fmt2, boost::match_default | boost::format_sed);
+//    std::cout << "HTML Replaced:\n" << body_ << std::endl;
+    }
     response->SetBody(body_);
     std::string length;
     std::ostringstream temp;
