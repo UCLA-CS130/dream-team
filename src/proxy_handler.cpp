@@ -102,11 +102,6 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       response->AddHeader(header.substr(0, index), header.substr(index+2, cr - (index + 2)));
       }
      
-/*
-      std::vector<std::string> header_token;
-      tokenize(header, header_token, HEADER_KEY_VALUE_DELIMITER);
-      response->AddHeader(header_token[0], header_token[1]);
-*/
     }
     std::cout << "\n";
 
@@ -117,7 +112,6 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       body_ += ss.str();
     }
     
-
     // Read until EOF, writing data to output as we go.
     boost::system::error_code error;
     while (boost::asio::read(socket, response_, boost::asio::transfer_at_least(1), error)) {
@@ -135,9 +129,9 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     temp  <<  ((int) body_.size());
     length = temp.str();
     response->AddHeader("Content-Length", length);
-  }
-  catch (std::exception& e) {
+  } catch (std::exception& e) {
     std::cout << "Exception: " << e.what() << "\n";
-  }  
+  }
+
   return RequestHandler::OK;
 }
