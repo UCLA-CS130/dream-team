@@ -36,7 +36,16 @@ RequestHandler::Status ProxyHandler::Init(const std::string& uri_prefix,
 }
 
 RequestHandler::Status ProxyHandler::HandleRequest(const Request &request, 
-						  Response *response) {
+                                                   Response *response) {
+  return HandleRequestHelper(request, response, 0);
+}
+
+RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
+                                                         Response* response, int count) {
+  if (count >= MAX_REDIRECTS) {
+    return RequestHandler::INVALID_CONFIG;
+  }
+
   try {
     std::cout << "Host: " << proxy_host_ << std::endl;
     std::cout << "Port: " << proxy_port_ << std::endl;
@@ -145,12 +154,10 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
           proxy_host_ = new_host;
           
         }
-      }
-     
+      }  
     }
-    if (!new_host.empty())
-    {
-      return HandleRequest(request, response);
+    if (!new_host.empty()) {
+      return HandleRequestHelper(request, response, (count + 1));
     }
     else {
       for (unsigned i = 0; i < header_vector.size(); i++) {
@@ -183,8 +190,8 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       std::string fmt2 = "href=\"" + uri_prefix_ + "\\1\"";
       std::string replaced  = boost::regex_replace(body_, r, fmt, boost::match_default | boost::format_sed);
       body_ = boost::regex_replace(replaced, r2, fmt2, boost::match_default | boost::format_sed);
-//    std::cout << "HTML Replaced:\n" << body_ << std::endl;
     }
+
     response->SetBody(body_);
     std::string length;
     std::ostringstream temp;
