@@ -4,10 +4,8 @@
 //
 
 #include <iostream>
+#include <thread>
 #include "connection_manager.h"
-
-const std::string PROTOCOL_VERSION = "HTTP/1.1";
-const std::string CONTENT_TYPE_HEADER = "Content-Type";
 
 ConnectionManager::ConnectionManager(BasicServerConfig* parsed_config) {
   parsed_config_ = parsed_config;
@@ -23,32 +21,40 @@ void ConnectionManager::RunTcpServer() {
 					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port));
 
   while (true) {
-    boost::asio::ip::tcp::socket socket(aios);
-    acceptor.accept(socket);
-       
-    std::stringstream message_stream;
-    boost::asio::streambuf buffer;
-    boost::system::error_code error;
-    size_t len = read_until(socket, buffer, REQUEST_DELIMITER, error);      
+    auto socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(aios));
+    acceptor.accept(*socket);    
+    QueueClientThread(std::move(socket));
+  }
+}
 
-    if (len) {
-      message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
+void ConnectionManager::QueueClientThread(std::unique_ptr<boost::asio::ip::tcp::socket> socket) {
+  std::thread client_req_handler(&ConnectionManager::ProcessClientConnection, this, std::move(socket));
+  client_req_handler.detach();
+}
+
+void ConnectionManager::ProcessClientConnection(std::unique_ptr<boost::asio::ip::tcp::socket> socket) {
+  std::stringstream message_stream;
+  boost::asio::streambuf buffer;
+  boost::system::error_code error;
+  size_t len = read_until(*socket, buffer, REQUEST_DELIMITER, error);      
+
+  if (len) {
+    message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
       
-      std::string raw_request = message_stream.str();
-      std::cout << "Incoming Request: " << std::endl << raw_request << std::endl;
+    std::string raw_request = message_stream.str();
+    std::cout << "Incoming Request: " << std::endl << raw_request << std::endl;
       
-      Response response;
-      std::unique_ptr<Request> req = Request::Parse(raw_request);             
-      RequestHandler::Status handle_resp = HandleRequest(*req, &response); 
+    Response response;
+    std::unique_ptr<Request> req = Request::Parse(raw_request);             
+    RequestHandler::Status handle_resp = HandleRequest(*req, &response); 
       
-      if (handle_resp != RequestHandler::OK) {
-	std::cerr << "Error " << handle_resp << " while handling " << raw_request << std::endl;	
-	response.SetStatus(Response::SERVER_ERROR);
-      }
-      
-      parsed_config_->UpdateStatusHandlers(*req, response);
-      StreamHttpResponse(socket, response);
+    if (handle_resp != RequestHandler::OK) {
+      std::cerr << "Error " << handle_resp << " while handling " << raw_request << std::endl;	
+      response.SetStatus(Response::SERVER_ERROR);
     }
+      
+    parsed_config_->UpdateStatusHandlers(*req, response);
+    StreamHttpResponse(*socket, response);
   }
 }
 
