@@ -61,7 +61,7 @@ def is_echo_valid(port, response, request_type, request_resource):
            and check_resp_body(port, response, request_type, request_resource)
 
 def main():
-    port_number = '12397'
+    port_number = '12399'
     test_fname = 'integration_test_config'
     path_to_bin = os.getcwd() + '/bin'
     path_to_config_file = path_to_bin + '/' + test_fname

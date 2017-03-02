@@ -6,7 +6,7 @@ import os, sys, subprocess, time, httplib, urllib
 
 def create_test_config(port_number, test_fname):
     port = 'port ' + port_number + ';\n'
-    proxy = 'path /proxy ProxyHandler {\n\t host localhost;\n\tport 12397;\n\t}\n'
+    proxy = 'path /proxy ProxyHandler {\n\t host localhost;\n\tport 12497;\n\t}\n'
     root_path = 'path / StaticHandler {\n\t root integration_dir;\n\t}\n'
     config_file_content = port + proxy + root_path
 
@@ -54,8 +54,8 @@ def is_result_same(response_direct, response_proxy):
     return check_status_line(response_direct, response_proxy) and check_resp_body(response_direct, response_proxy)
 
 def main():
-    port_number = '12397'
-    port_number_2 = '12398'
+    port_number = '12497'
+    port_number_2 = '12498'
     test_fname = 'integration_proxy_test_config'
     test_fname_2 = 'integration_proxy_test_config2'
     test_file_name = 'integration_proxy_test.txt'
