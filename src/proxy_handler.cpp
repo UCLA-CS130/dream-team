@@ -18,7 +18,7 @@
 
 
 RequestHandler::Status ProxyHandler::Init(const std::string& uri_prefix,
-					 const NginxConfig& config) {
+                                          const NginxConfig& config) {
   uri_prefix_ = uri_prefix;
   ParsedConfig parser;
   proxy_host_ = parser.GetStatementValue(&config, "host");
@@ -41,7 +41,8 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
 }
 
 RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
-                                                         Response* response, int count) {
+                                                         Response* response,
+                                                         int count) {
   if (count >= MAX_REDIRECTS) {
     return RequestHandler::INVALID_CONFIG;
   }
@@ -68,7 +69,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
 
     // Try each endpoint until we successfully establish a connection.
 
-    // Form the rrequest. We specify the "Connection: close" header so that the
+    // Form the request. We specify the "Connection: close" header so that the
     // server will close the socket after transmitting the response. This will
     // allow us to treat all data up until the EOF as the content.
     boost::asio::streambuf request_;
@@ -77,8 +78,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
     std::string orig_uri = request.uri();
     if (uri_prefix_.size() == 1) {
       redirect_uri = orig_uri;
-    }
-    else {
+    } else {
       if (uri_prefix_.size() + 1 >= orig_uri.size())
         redirect_uri = "/";
       else 
@@ -88,7 +88,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
     if (!redirect_uri_.empty()) {
       redirect_uri = redirect_uri_;
     }
-    //TODO: Change to "/"
+
     request_stream << "GET " + redirect_uri + " HTTP/1.0\r\n";
     request_stream << "Host: " << proxy_host_ << "\r\n";
     request_stream << "Accept: */*\r\n";
@@ -115,6 +115,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
       std::cout << "Invalid response\n";
       return RequestHandler::INVALID_CONFIG;
     }
+
     if (status_code != 200 && status_code != 302) {
       std::cout << "Response returned with status code " << status_code << "\n";
       return RequestHandler::INVALID_CONFIG;
@@ -136,9 +137,8 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
       if (index != std::string::npos) {
         if (header.substr(0, index).compare("Location") || status_code != 302) {
         header_vector.push_back(std::make_pair(header.substr(0, index), header.substr(index+2, cr - (index + 2))));
-        }
-        else {
-          new_host = header.substr(index+2, cr - (index + 2));
+        } else {
+          new_host = header.substr(index + 2, cr - (index + 2));
           
           if (!strncmp(new_host.c_str(), "http://", 7)) {
             new_host = new_host.substr(7);
@@ -158,8 +158,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
     }
     if (!new_host.empty()) {
       return HandleRequestHelper(request, response, (count + 1));
-    }
-    else {
+    } else {
       for (unsigned i = 0; i < header_vector.size(); i++) {
         response->AddHeader(header_vector[i].first, header_vector[i].second);
       }
@@ -200,6 +199,7 @@ RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
     response->AddHeader("Content-Length", length);
   } catch (std::exception& e) {
     std::cout << "Exception: " << e.what() << "\n";
+    return RequestHandler::INVALID_CONFIG;
   }
 
   return RequestHandler::OK;
