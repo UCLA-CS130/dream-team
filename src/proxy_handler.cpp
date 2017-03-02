@@ -16,6 +16,7 @@
 #include "utils.h"
 #include <boost/regex.hpp>
 
+
 RequestHandler::Status ProxyHandler::Init(const std::string& uri_prefix,
 					 const NginxConfig& config) {
   uri_prefix_ = uri_prefix;
@@ -30,28 +31,44 @@ RequestHandler::Status ProxyHandler::Init(const std::string& uri_prefix,
     return RequestHandler::INVALID_CONFIG;
   }
 
+  redirect_uri_ = "";
   return RequestHandler::OK;
 }
 
 RequestHandler::Status ProxyHandler::HandleRequest(const Request &request, 
-						  Response *response) {
+                                                   Response *response) {
+  return HandleRequestHelper(request, response, 0);
+}
+
+RequestHandler::Status ProxyHandler::HandleRequestHelper(const Request& request,
+                                                         Response* response, int count) {
+  if (count >= MAX_REDIRECTS) {
+    return RequestHandler::INVALID_CONFIG;
+  }
+
   try {
     std::cout << "Host: " << proxy_host_ << std::endl;
     std::cout << "Port: " << proxy_port_ << std::endl;
     std::string body_;
 
     boost::asio::io_service io_service;
-
+    
     // Get a list of endpoints corresponding to the server name.
     boost::asio::ip::tcp::resolver resolver(io_service);
-    boost::asio::ip::tcp::resolver::query query(proxy_host_, proxy_port_);
+    boost::asio::ip::tcp::resolver::query query(proxy_host_, proxy_port_, boost::asio::ip::resolver_query_base::numeric_service);
     boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    boost::asio::ip::tcp::resolver::iterator end;
+    boost::system::error_code conn_error = boost::asio::error::host_not_found;
+    boost::asio::ip::tcp::socket socket (io_service);
+
+    while (conn_error && endpoint_iterator != end) {
+      socket.close();
+      socket.connect(*endpoint_iterator++, conn_error);
+    }
 
     // Try each endpoint until we successfully establish a connection.
-    boost::asio::ip::tcp::socket socket(io_service);
-    boost::asio::connect(socket, endpoint_iterator);
 
-    // Form the request. We specify the "Connection: close" header so that the
+    // Form the rrequest. We specify the "Connection: close" header so that the
     // server will close the socket after transmitting the response. This will
     // allow us to treat all data up until the EOF as the content.
     boost::asio::streambuf request_;
@@ -66,6 +83,10 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
         redirect_uri = "/";
       else 
         redirect_uri = orig_uri.substr(uri_prefix_.size());
+    }
+
+    if (!redirect_uri_.empty()) {
+      redirect_uri = redirect_uri_;
     }
     //TODO: Change to "/"
     request_stream << "GET " + redirect_uri + " HTTP/1.0\r\n";
@@ -94,7 +115,7 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       std::cout << "Invalid response\n";
       return RequestHandler::INVALID_CONFIG;
     }
-    if (status_code != 200) {
+    if (status_code != 200 && status_code != 302) {
       std::cout << "Response returned with status code " << status_code << "\n";
       return RequestHandler::INVALID_CONFIG;
     } else {
@@ -107,13 +128,41 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
     std::string header;
     size_t index;
     size_t cr;
+    std::string new_host = "";
+    std::vector<std::pair<std::string, std::string>> header_vector;
     while (std::getline(response_stream, header) && header != "\r") {
       index = header.find(':', 0);
       cr = header.find('\r', index);
       if (index != std::string::npos) {
-      response->AddHeader(header.substr(0, index), header.substr(index+2, cr - (index + 2)));
+        if (header.substr(0, index).compare("Location") || status_code != 302) {
+        header_vector.push_back(std::make_pair(header.substr(0, index), header.substr(index+2, cr - (index + 2))));
+        }
+        else {
+          new_host = header.substr(index+2, cr - (index + 2));
+          
+          if (!strncmp(new_host.c_str(), "http://", 7)) {
+            new_host = new_host.substr(7);
+          } else if (!strncmp(new_host.c_str(), "https://", 8)) {
+            new_host = new_host.substr(8);
+          }
+          size_t first_slash = new_host.find("/");
+          if (first_slash != std::string::npos) {
+            new_host = new_host.substr(0, first_slash);
+            redirect_uri_ = new_host.substr(first_slash);
+          }
+          
+          proxy_host_ = new_host;
+          
+        }
+      }  
+    }
+    if (!new_host.empty()) {
+      return HandleRequestHelper(request, response, (count + 1));
+    }
+    else {
+      for (unsigned i = 0; i < header_vector.size(); i++) {
+        response->AddHeader(header_vector[i].first, header_vector[i].second);
       }
-     
     }
     std::cout << "\n";
 
@@ -141,8 +190,8 @@ RequestHandler::Status ProxyHandler::HandleRequest(const Request &request,
       std::string fmt2 = "href=\"" + uri_prefix_ + "\\1\"";
       std::string replaced  = boost::regex_replace(body_, r, fmt, boost::match_default | boost::format_sed);
       body_ = boost::regex_replace(replaced, r2, fmt2, boost::match_default | boost::format_sed);
-//    std::cout << "HTML Replaced:\n" << body_ << std::endl;
     }
+
     response->SetBody(body_);
     std::string length;
     std::ostringstream temp;

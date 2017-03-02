@@ -8,6 +8,8 @@
 
 #include "request_handler.h"
 
+const int MAX_REDIRECTS = 20;
+
 class ProxyHandler : public RequestHandler {
  public:
   virtual RequestHandler::Status Init(const std::string& uri_prefix,
@@ -15,9 +17,13 @@ class ProxyHandler : public RequestHandler {
   
   virtual RequestHandler::Status HandleRequest(const Request& request,
 					       Response* response) override;
+
+  RequestHandler::Status HandleRequestHelper(const Request& request,
+                 Response* response, int count);
  private:
   std::string proxy_host_;
   std::string proxy_port_;
+  std::string redirect_uri_;
 };
 
 REGISTER_REQUEST_HANDLER(ProxyHandler);
