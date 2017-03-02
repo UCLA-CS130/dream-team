@@ -4,13 +4,17 @@ import os, sys, subprocess, time, httplib, urllib
 
 # Dynamically creates a config file for the test
 
-def create_test_config(port_number, test_fname):
+def create_test_config(port_number, test_fname, path_directory):
+    bin_path = 'bin/' + path_directory
+    if not os.path.exists(bin_path):
+        os.makedirs(bin_path)
     port = 'port ' + port_number + ';\n'
     proxy = 'path /proxy ProxyHandler {\n\t host localhost;\n\tport 12497;\n\t}\n'
     root_path = 'path / StaticHandler {\n\t root integration_dir;\n\t}\n'
     config_file_content = port + proxy + root_path
+    path_to_file = '/' + test_fname
 
-    config_file = open(test_fname, 'w+')
+    config_file = open(path_to_file, 'w+')
     config_file.write(config_file_content)
     config_file.close
 
@@ -60,13 +64,14 @@ def main():
     test_fname_2 = 'integration_proxy_test_config2'
     test_file_name = 'integration_proxy_test.txt'
     path_to_bin = os.getcwd() + '/bin'
+    path_directory = 'integration_dir'
     path_to_config_file = path_to_bin + '/' + test_fname
     path_to_config_file_2 = path_to_bin + '/' + test_fname_2
-    path_to_test_file = path_to_bin + '/integration_dir/' + test_file_name
+    path_to_test_file = path_to_bin + '/' + path_directory + '/' + test_file_name
     test_file_contents = "test file"
 
-    create_test_config(port_number, path_to_config_file)
-    create_test_config(port_number_2, path_to_config_file_2)
+    create_test_config(port_number, path_to_config_file, path_directory)
+    create_test_config(port_number_2, path_to_config_file_2, path_directory)
     create_test_file(port_number, path_to_test_file, test_file_contents)
     
     test_files = []
