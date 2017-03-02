@@ -7,6 +7,7 @@
 #define ProxyHandler_h
 
 #include "request_handler.h"
+#include <boost/asio.hpp>
 
 const int MAX_REDIRECTS = 20;
 
@@ -25,6 +26,10 @@ class ProxyHandler : public RequestHandler {
   std::string proxy_host_;
   std::string proxy_port_;
   std::string redirect_uri_;
+  void SendRequest(const Request& request, Response* response, int count, boost::asio::ip::tcp::socket* socket);
+  RequestHandler::Status HandleHeaders(const Request& request, Response* response, int count, boost::asio::ip::tcp::socket* socket, std::string* body);
+  void HandleBody(const Request& request, Response* response, std::string* body);
+
 };
 
 REGISTER_REQUEST_HANDLER(ProxyHandler);
