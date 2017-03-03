@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -g -Wall -pthread -std=c++11 -lboost_system
+FLAGS = -g -Wall -pthread -std=c++11 -lboost_system -lboost_regex
 NGINX_DIR = src/nginx-configparser
 
 CLASSES = src/*.cpp
@@ -19,16 +19,17 @@ TEST_CLASSES = 	src/connection_manager.cpp \
 		src/not_found_handler.cpp \
 		src/request_handler.cpp \
 		src/status_handler.cpp \
+		src/proxy_handler.cpp \
 		src/traffic_monitor.cpp
 
 TEST_IO = tests/*.cpp $(TEST_CLASSES) $(NGINX_DIR)/config_parser.cc $(GTEST_DIR)/src/gtest_main.cc build/libgtest.a -o bin/$@
 
 all: webserver
 
-test: unit-test integration-test
+test: unit-test integration-proxy-test integration-test
 
 unit-test: gunit webserver	
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS)
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS) $(FLAGS)
 	./bin/$@
 
 gunit:
@@ -44,6 +45,9 @@ unit-test-coverage: unit-test
 
 integration-test: webserver
 	python tests/integration_tests.py
+
+integration-proxy-test: webserver
+	python tests/integration_proxy_tests.py
 
 webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
 	$(CC) -o bin/$@ $^ $(FLAGS)	
