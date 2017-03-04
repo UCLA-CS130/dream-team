@@ -26,9 +26,9 @@ TEST_IO = tests/*.cpp $(TEST_CLASSES) $(NGINX_DIR)/config_parser.cc $(GTEST_DIR)
 
 all: webserver
 
-test: unit-test integration-proxy-test integration-test
+test: unit-test integration-test
 
-unit-test: gunit webserver	
+unit-test: gunit webserver
 	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS) $(FLAGS)
 	./bin/$@
 
@@ -46,13 +46,19 @@ unit-test-coverage: unit-test
 integration-test: webserver
 	python tests/integration_tests.py
 
+integration-test-2-reqs: webserver
+	python tests/integration_tests.py
+
+integration-test-4-reqs: webserver
+	python tests/multiple_requests_integration_test.py
+
 integration-proxy-test: webserver
 	python tests/integration_proxy_tests.py
 
 webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
-	$(CC) -o bin/$@ $^ $(FLAGS)	
+	$(CC) -o bin/$@ $^ $(FLAGS)
 
-clean: 
+clean:
 	rm -rf *.o *.a *.gcov *.gcda *.gcno
 	rm -rf build/*
 	rm -rf bin/*
