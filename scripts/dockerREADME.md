@@ -22,4 +22,4 @@ Notes: give executable permission on setup 'chmode u+x docker_run_deployed_serve
 Purpose: Kills a docker container to free port and allow 'docker_run_deployed_server.sh'
 to run again <br />
 Usage: docker ps <br />
-docker kill <process id> <br />
+docker kill `<process id>` <br />
