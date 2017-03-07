@@ -13,7 +13,7 @@ Notes: give executable permission on setup 'chmode u+x docker_deploy_local.sh' <
 
 Purpose: Runs the binary ('./deploy/bin/webserver') with config_file and 
 contents from 'deploy' directory <br />
-Usage: './scripts/docker_deploy_local.sh' <br />
+Usage: './scripts/docker_run_deployed_server.sh' <br />
 Notes: give executable permission on setup 'chmode u+x docker_run_deployed_server.sh' <br />
 
 
@@ -23,3 +23,4 @@ Purpose: Kills a docker container to free port and allow 'docker_run_deployed_se
 to run again <br />
 Usage: docker ps <br />
 docker kill `<process id>` <br />
+Notes: Currently deployed to local, not to AWS server
