@@ -1,0 +1,44 @@
+Notes:
+
+Amazon ssh:
+ssh -i /Users/briancho/Documents/CS130-shared/dream-team/myKeyPair.pem ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com
+
+Ubuntu install docker:
+sudo apt-get update
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+sudo apt-get update
+apt-cache policy docker-engine
+sudo apt-get install -y docker-engine
+sudo systemctl status docker    //check
+sudo usermod -aG docker $USER
+// relog
+sudo usermod -aG docker username
+docker run hello-world    // check
+
+Transfer Docker Image to Ubuntu:
+docker save -o `pwd`/dockerServerImage httpserver
+sudo scp -i myKeyPair.pem dockerServerImage ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com:~    // stores image at home directory
+docker load -i ~/dockerServerImage
+
+Command Order:
+
+# local machine:
+
+### compiles binary images and stores in webserver
+docker build -t httpserver.build .
+docker run httpserver.build > binary.tar
+tar -xf binary.tar -C ./deploy
+rm -f binary.tar
+
+### creates image from deploy director
+docker build -t httpserver --file deploy/Dockerfile.run deploy
+
+### transfer image from deploy to aws
+docker save -o `pwd`/dockerServerImage httpserver
+sudo scp -i myKeyPair.pem dockerServerImage ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com:~    # stores image at home directory
+
+# AWS EC2
+
+docker load -i ~/dockerServerImage
+docker run --rm -t -p 8080:8080 httpserver
