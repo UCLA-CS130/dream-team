@@ -1,9 +1,25 @@
-Notes:
+## Notes:
 
-Amazon ssh:
+1. Install Docker on Local machine
+https://docs.docker.com/docker-for-mac/
+
+2. Build and run your webserver in docker and deploy to AWS
+./scripts/docker_deploy.sh
+
+3. ssh into AWS
 ssh -i /Users/briancho/Documents/CS130-shared/dream-team/myKeyPair.pem ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com
 
-Ubuntu install docker:
+4. spin up docker container and run server
+./run_docker_image.sh
+
+5. delete docker instance
+docker ps
+docker kill <container ID>
+
+
+## Additional Notes:
+
+Ubuntu 16.04 install docker:
 sudo apt-get update
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
@@ -21,9 +37,10 @@ docker save -o `pwd`/dockerServerImage httpserver
 sudo scp -i myKeyPair.pem dockerServerImage ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com:~    // stores image at home directory
 docker load -i ~/dockerServerImage
 
+
 Command Order:
 
-# local machine:
+## local machine:
 
 ### compiles binary images and stores in webserver
 docker build -t httpserver.build .
