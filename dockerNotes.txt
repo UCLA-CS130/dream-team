@@ -37,6 +37,11 @@ docker save -o `pwd`/dockerServerImage httpserver
 sudo scp -i myKeyPair.pem dockerServerImage ubuntu@ec2-54-205-194-82.compute-1.amazonaws.com:~    // stores image at home directory
 docker load -i ~/dockerServerImage
 
+test examples from browser:
+http://ec2-54-205-194-82.compute-1.amazonaws.com:8080/echo
+http://ec2-54-205-194-82.compute-1.amazonaws.com:8080/status
+http://ec2-54-205-194-82.compute-1.amazonaws.com:8080/proxy
+
 
 Command Order:
 
