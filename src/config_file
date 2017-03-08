@@ -1,4 +1,4 @@
-port 2020;
+port 8080;
 
 path / StaticHandler {
      root tests/test_file_dir;
