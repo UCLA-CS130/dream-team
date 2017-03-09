@@ -26,8 +26,11 @@ class ConnectionManager {
  private:
   void QueueClientThread(std::unique_ptr<boost::asio::ip::tcp::socket> socket);
   void ProcessClientConnection(std::unique_ptr<boost::asio::ip::tcp::socket> socket);
-  void StreamHttpResponse(boost::asio::ip::tcp::socket& socket, const Response& resp);
+  void StreamHttpResponse(boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>& socket,
+			  const Response& resp);
+
   BasicServerConfig* parsed_config_;
+  boost::asio::io_service aios_;
 };
 
 #endif
