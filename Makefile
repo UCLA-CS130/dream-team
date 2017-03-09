@@ -1,5 +1,6 @@
 CC = g++
-FLAGS = -g -Wall -pthread -std=c++11 -lboost_system -lboost_regex
+FLAGS = -g -Wall -std=c++11
+LDFLAGS = -static-libgcc -static-libstdc++ -pthread -Wl,-Bstatic -lboost_system -lboost_regex
 NGINX_DIR = src/nginx-configparser
 
 CLASSES = src/*.cpp
@@ -29,7 +30,7 @@ all: webserver
 test: unit-test integration-test
 
 unit-test: gunit webserver
-	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS) $(FLAGS)
+	$(CC) $(TEST_FLAGS) $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include $(TEST_IO) $(TEST_ARGS) $(FLAGS) $(LDFLAGS)
 	./bin/$@
 
 gunit:
@@ -56,7 +57,7 @@ integration-proxy-test: webserver
 	python tests/integration_proxy_tests.py
 
 webserver: $(CLASSES) $(NGINX_DIR)/config_parser.cc
-	$(CC) -o bin/$@ $^ $(FLAGS)
+	$(CC) -o bin/$@ $^ $(FLAGS) $(LDFLAGS)
 
 clean:
 	rm -rf *.o *.a *.gcov *.gcda *.gcno
