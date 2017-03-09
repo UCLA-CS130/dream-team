@@ -10,6 +10,7 @@
 #include <memory>
 #include <fstream>
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include "utils.h"
 #include "response.h"
 #include "request.h"
