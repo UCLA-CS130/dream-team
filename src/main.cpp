@@ -2,7 +2,7 @@
 #include <string>
 #include <exception>
 #include <boost/asio.hpp>
-#include "connection_manager.h"
+#include "ssl_connection_manager.h"
 #include "basic_server_config.h"
 
 #define INVALID_PORT 0
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
   }
   
   try {
-    ConnectionManager manager(&parsed_config);
+    SSLConnectionManager manager(&parsed_config);
     manager.RunTcpServer();
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;

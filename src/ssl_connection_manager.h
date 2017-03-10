@@ -11,13 +11,13 @@
 
 class SSLConnectionManager : public ConnectionManager {
  public:
-  SSLConnectionManager(BasicServerConfig* parsed_config, boost::asio::ssl::context* context_);
+  SSLConnectionManager(BasicServerConfig* parsed_config);
 
  protected:
   virtual void OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket) override; 
 
  private:
-  boost::asio::ssl::context* context_;
+  boost::asio::ssl::context context_;
 };
 
 #endif
