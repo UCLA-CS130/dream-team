@@ -34,21 +34,6 @@ void ConnectionManager::OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::sock
   ProcessClient(*socket);
 }
 
-template<typename AbstractSocket>
-void ConnectionManager::ProcessClient(AbstractSocket& sock) {
-  Response response;
-  std::unique_ptr<Request> req = ReadHttpRequest(sock);
-  RequestHandler::Status handle_resp = HandleRequest(*req, &response); 
-  
-  if (handle_resp != RequestHandler::OK) {
-    std::cerr << "Error " << handle_resp << " while handling " << req->raw_request() << std::endl;	
-    response.SetStatus(Response::SERVER_ERROR);
-  }
-  
-  parsed_config_->UpdateStatusHandlers(*req, response);
-  StreamHttpResponse(sock, response);
-}
-
 RequestHandler::Status ConnectionManager::HandleRequest(const Request& req, Response* response) {
   std::string req_uri = req.uri();
   RequestHandler* handler = parsed_config_->GetRequestHandlerFromUri(req_uri);  
@@ -57,26 +42,4 @@ RequestHandler::Status ConnectionManager::HandleRequest(const Request& req, Resp
   }
 
   return handler->HandleRequest(req, response);
-}
-
-template<typename ReadStream>
-std::unique_ptr<Request> ConnectionManager::ReadHttpRequest(ReadStream& read_stream) {
-  std::stringstream message_stream;
-  boost::asio::streambuf buffer;
-  boost::system::error_code error;
-
-  size_t len = read_until(read_stream, buffer, REQUEST_DELIMITER, error);      
-  message_stream.write(boost::asio::buffer_cast<const char *>(buffer.data()), len);
-  
-  std::string raw_request = message_stream.str();
-  std::cout << "Incoming Request: " << std::endl << raw_request << std::endl;      
-  return Request::Parse(raw_request);                
-}
-
-template<typename WriteStream>
-void ConnectionManager::StreamHttpResponse(WriteStream& write_stream, 
-					   const Response& resp) {  
-  std::string ser_resp = resp.ToString();
-  std::cout << "RESPONSE: " << ser_resp << std::endl;
-  boost::asio::write(write_stream, boost::asio::buffer(ser_resp)); 
 }
