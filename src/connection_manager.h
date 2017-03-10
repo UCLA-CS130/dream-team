@@ -22,15 +22,27 @@ class ConnectionManager {
   ConnectionManager(BasicServerConfig* parsed_config);
 
   void RunTcpServer();
-  RequestHandler::Status HandleRequest(const Request& request, Response* response);
+  RequestHandler::Status HandleRequest(const Request& request, Response* response);   
+  
+ protected:  
+  void OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket);  
+  
  private:
-  void QueueClientThread(std::unique_ptr<boost::asio::ip::tcp::socket> socket);
-  void ProcessClientConnection(std::unique_ptr<boost::asio::ip::tcp::socket> socket);
-  void StreamHttpResponse(boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>& socket,
-			  const Response& resp);
+  void QueueClientThread(std::unique_ptr<boost::asio::ip::tcp::socket> socket);  
 
+  template<typename AbstractSocket>
+  void ProcessClient(AbstractSocket& sock);
+
+  template<typename ReadStream>
+  std::unique_ptr<Request> ReadHttpRequest(ReadStream& read_stream);
+  
+  template<typename WriteStream>
+  void StreamHttpResponse(WriteStream& write_stream,
+			  const Response& resp);
+  
   BasicServerConfig* parsed_config_;
   boost::asio::io_service aios_;
+  boost::asio::ssl::context context_;
 };
 
 #endif
