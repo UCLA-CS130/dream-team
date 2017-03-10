@@ -8,14 +8,7 @@
 #include "connection_manager.h"
 
 ConnectionManager::ConnectionManager(BasicServerConfig* parsed_config) :
-  parsed_config_(parsed_config), context_(aios_, boost::asio::ssl::context::sslv23) {  
-  context_.set_options(boost::asio::ssl::context::default_workarounds |
-  		      boost::asio::ssl::context::no_sslv2 | 
-		      boost::asio::ssl::context::single_dh_use);
-  
-  context_.use_certificate_chain_file("/etc/ssl/certs/dt-server.pem");
-  context_.use_private_key_file("/etc/ssl/certs/dt-server.key", boost::asio::ssl::context::pem);
-}
+  parsed_config_(parsed_config) {}
 
 // Boost usage inspired by https://github.com/egalli64/thisthread/blob/master/asio/tcpIpCs.cpp
 void ConnectionManager::RunTcpServer() {
@@ -38,9 +31,7 @@ void ConnectionManager::QueueClientThread(std::unique_ptr<boost::asio::ip::tcp::
 }
 
 void ConnectionManager::OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket) { 
-  boost::asio::ssl::stream<boost::asio::ip::tcp::socket&> ssl_sock(*socket, context_);
-  ssl_sock.handshake(boost::asio::ssl::stream_base::server);
-  ProcessClient(ssl_sock);
+  ProcessClient(*socket);
 }
 
 template<typename AbstractSocket>
