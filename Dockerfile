@@ -4,6 +4,8 @@ RUN apt-get update
 RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y make
 RUN apt-get install -y g++
+RUN apt-get install openssl
+RUN apt-get install libssl-dev
 
 WORKDIR /opt/httpserver
 COPY . /opt/httpserver
