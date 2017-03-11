@@ -7,7 +7,7 @@
 class EchoHandlerTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
-  NginxConfig config_; 
+  NginxConfig config_;
   EchoHandler* echo_handler_;
 
   bool CreateEchoHandlerTest(const std::string config_string) {
@@ -56,8 +56,8 @@ TEST_F(EchoHandlerTest, BasicEchoHandlerTest) {
   bool did_parse = CreateEchoHandlerTest("port 2020;\npath /echo EchoHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n}\ndefault NotFoundHandler {}\n");
   EXPECT_TRUE(did_parse);
   EXPECT_EQ(0, echo_handler_->Init("/echo", config_));
-  
-  Request req = CreateEchoTestRequest(); 
+
+  Request req = CreateEchoTestRequest();
   Response resp;
   EXPECT_EQ(0, echo_handler_->HandleRequest(req, &resp));
 

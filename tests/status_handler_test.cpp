@@ -8,7 +8,7 @@
 class StatusHandlerTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
-  NginxConfig config_; 
+  NginxConfig config_;
   StatusHandler* status_handler_;
   BasicServerConfig parsed_config_;
 
@@ -64,8 +64,8 @@ TEST_F(StatusHandlerTest, BasicStatusHandlerTest) {
   bool did_parse = CreateStatusHandlerTest("port 2020;\npath /echo EchoHandler {}\npath /status StatusHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n}\ndefault NotFoundHandler {}\n");
   EXPECT_TRUE(did_parse);
   EXPECT_EQ(0, status_handler_->Init("/status", config_));
-  
-  Request req = CreateStatusTestRequest(); 
+
+  Request req = CreateStatusTestRequest();
   Response resp;
   EXPECT_EQ(0, status_handler_->HandleRequest(req, &resp));
 
@@ -74,7 +74,7 @@ TEST_F(StatusHandlerTest, BasicStatusHandlerTest) {
   const std::string version = "HTTP/1.1";
   const std::string statusCode = "200";
   const std::string status = "OK";
-	 
+
   expectedResponse += version + " " + statusCode + " " + status + "\r\n";
 
   const std::string headerContent = "Content-Type: text/plain" ;

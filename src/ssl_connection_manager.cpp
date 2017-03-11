@@ -11,8 +11,8 @@ SSLConnectionManager::SSLConnectionManager(BasicServerConfig* parsed_config)
 		       boost::asio::ssl::context::no_sslv2 | 
 		       boost::asio::ssl::context::single_dh_use);
   
-  context_.use_certificate_chain_file("/etc/ssl/certs/dt-server.pem");
-  context_.use_private_key_file("/etc/ssl/certs/dt-server.key", boost::asio::ssl::context::pem);
+  context_.use_certificate_chain_file("tests/certs/dt-server.pem");
+  context_.use_private_key_file("tests/certs/dt-server.key", boost::asio::ssl::context::pem);
 }
 
 void SSLConnectionManager::OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket) {
