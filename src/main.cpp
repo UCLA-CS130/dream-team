@@ -10,11 +10,11 @@
 
 bool isParsedConfigValid(BasicServerConfig* pc) {
   int port_number = pc->GetPortNumber();
-  if (port_number <= 0 || port_number > MAX_PORT) { 
+  if (port_number <= 0 || port_number > MAX_PORT) {
     std::cerr << "Invalid port number" << std::endl;
     return false;
   }
-  
+
   std::cout << "Server port number is " << port_number << std::endl;
   return true;
 }
@@ -24,21 +24,21 @@ int main(int argc, char* argv[]) {
     std::cerr << "Usage: webserver <nginx_config_file>" << std::endl;
     return 1;
   }
-  
+
   NginxConfigParser config_parser;
   NginxConfig config;
   if (!config_parser.Parse(argv[1], &config)) {
     std::cerr << "Invalid config file syntax" << std::endl;
     return 1;
   }
-  
+
   BasicServerConfig parsed_config(&config);
   parsed_config.RegisterTrafficMonitor(&TrafficMonitor::Get());
   if (!parsed_config.Init() || !isParsedConfigValid(&parsed_config)) {
     std::cerr << "Invalid config file option values" << std::endl;
     return 1;
   }
-  
+
   try {
     SSLConnectionManager manager(&parsed_config);
     manager.RunTcpServer();
