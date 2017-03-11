@@ -8,7 +8,7 @@
 #define INVALID_PORT 0
 #define MAX_PORT 65535
 
-bool isParsedConfigValid(BasicServerConfig* pc) {
+bool IsParsedConfigValid(BasicServerConfig* pc) {
   int port_number = pc->GetPortNumber();
   if (port_number <= 0 || port_number > MAX_PORT) { 
     std::cerr << "Invalid port number" << std::endl;
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   
   BasicServerConfig parsed_config(&config);
   parsed_config.RegisterTrafficMonitor(&TrafficMonitor::Get());
-  if (!parsed_config.Init() || !isParsedConfigValid(&parsed_config)) {
+  if (!parsed_config.Init() || !IsParsedConfigValid(&parsed_config)) {
     std::cerr << "Invalid config file option values" << std::endl;
     return 1;
   }

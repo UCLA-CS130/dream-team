@@ -26,7 +26,7 @@ TEST(ResponseTest, ResponseSerialization) {
   Response* resp = new Response();
   
   resp->SetStatus(expectedResponseCode);
-  for(int i = 0; i < headers.size(); i++){
+  for(unsigned i = 0; i < headers.size(); i++) {
     expectedResponse += HEADER_DELIMITER;
     expectedResponse += headers[i].first + HEADER_KEY_VALUE_DELIMITER + headers[i].second;
     

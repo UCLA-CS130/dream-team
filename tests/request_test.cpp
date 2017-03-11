@@ -28,7 +28,7 @@ TEST(RequestTest, RequestGenericTest) {
   headers.push_back(make_pair(header2_key, header2_value));
   
   std::string headers_str = "";
-  for(int i = 0; i < headers.size(); i++){
+  for(unsigned i = 0; i < headers.size(); i++) {
     headers_str += HEADER_DELIMITER;
     headers_str += headers[i].first + HEADER_KEY_VALUE_DELIMITER + headers[i].second;
   }
