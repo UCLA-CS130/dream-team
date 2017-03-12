@@ -5,14 +5,14 @@
 
 #include "ssl_connection_manager.h"
 
-SSLConnectionManager::SSLConnectionManager(BasicServerConfig* parsed_config) 
-  : ConnectionManager::ConnectionManager(parsed_config), context_(aios_, boost::asio::ssl::context::sslv23) {  
+SSLConnectionManager::SSLConnectionManager(BasicServerConfig* parsed_config, unsigned port_number)
+  : ConnectionManager::ConnectionManager(parsed_config, port_number), context_(aios_, boost::asio::ssl::context::sslv23) {
   context_.set_options(boost::asio::ssl::context::default_workarounds |
-		       boost::asio::ssl::context::no_sslv2 | 
+		       boost::asio::ssl::context::no_sslv2 |
 		       boost::asio::ssl::context::single_dh_use);
-  
-  context_.use_certificate_chain_file("tests/certs/dt-server.pem");
-  context_.use_private_key_file("tests/certs/dt-server.key", boost::asio::ssl::context::pem);
+
+  context_.use_certificate_chain_file(parsed_config->GetSSLPublicKeyPath());
+  context_.use_private_key_file(parsed_config->GetSSLPrivateKeyPath(), boost::asio::ssl::context::pem);
 }
 
 void SSLConnectionManager::OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket) {

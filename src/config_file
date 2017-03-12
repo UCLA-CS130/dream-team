@@ -1,5 +1,10 @@
 port 8080;
 
+ssl-port 8081 {
+  private_key_path tests/certs/dt-server.key;
+  public_key_path tests/certs/dt-server.pem;
+}
+
 path / StaticHandler {
      root tests/test_file_dir;
 }

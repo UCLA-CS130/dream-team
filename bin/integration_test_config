@@ -1,5 +1,0 @@
-port 12399;
-path /echo EchoHandler {}
-path / StaticHandler {
-	 root tests/test_file_dir/;
-	}

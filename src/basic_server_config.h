@@ -24,10 +24,24 @@ class BasicServerConfig : public ParsedConfig {
   void RegisterTrafficMonitor(TrafficMonitor* monitor);
   void UpdateStatusHandlers(const Request& req, const Response& resp);
 
-  unsigned GetPortNumber();
   RequestHandler* GetRequestHandlerFromUri(std::string uri);
+
+  bool IsHTTPPortDeclared();
+  unsigned GetHTTPPortNumber();
+
+  bool IsSSLPortDeclared();
+  unsigned GetSSLPortNumber();
+  std::string GetSSLPrivateKeyPath();
+  std::string GetSSLPublicKeyPath();
  private:
-  unsigned port_number_;
+  bool http_port_declared_;
+  bool ssl_port_declared_;
+
+  unsigned http_port_number_;
+
+  unsigned ssl_port_number_;
+  std::string ssl_private_key_path_;
+  std::string ssl_public_key_path_;
 
   std::map<std::string, std::unique_ptr<RequestHandler>> uri_to_request_handler_;
   std::unique_ptr<RequestHandler> default_handler_;
@@ -37,8 +51,8 @@ class BasicServerConfig : public ParsedConfig {
   bool InitRequestHandlers(NginxConfig* config);
 
   std::string GetLongestMatchingUri(std::string client_uri);
-  std::unique_ptr<RequestHandler> BuildHandlerForUri(std::string uri, 
-						     std::string handler_id, 
+  std::unique_ptr<RequestHandler> BuildHandlerForUri(std::string uri,
+						     std::string handler_id,
 						     NginxConfig* child_block);
 };
 
