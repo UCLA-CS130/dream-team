@@ -1,6 +1,6 @@
 CC = g++
 FLAGS = -g -Wall -std=c++11
-LDFLAGS = -static-libgcc -static-libstdc++ -pthread -L/usr/lib -lssl -lcrypto -ldl -lboost_system -lboost_regex
+LDFLAGS = -static-libgcc -static-libstdc++ -pthread -lssl -lcrypto -ldl -lboost_system -lboost_regex
 NGINX_DIR = src/nginx-configparser
 
 CLASSES = src/*.cpp
