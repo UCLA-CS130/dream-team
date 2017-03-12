@@ -17,6 +17,9 @@ ssh -i /Users/briancho/Documents/CS130-shared/dream-team/myKeyPair.pem ubuntu@ec
 4. spin up docker container and run server
 ./run_docker_image.sh
 
+screen - to create persistent environment
+screen -r - return to previous session after exiting terminal
+
 5. delete docker instance
 docker ps
 docker kill <container ID>
