@@ -7,7 +7,7 @@
 class BasicServerConfigTest : public ::testing::Test {
 protected:
   NginxConfigParser parser_;
-  NginxConfig out_config_; 
+  NginxConfig out_config_;
   BasicServerConfig* basic_server_config_;
 
   bool CreateBasicServerConfig(const std::string config_string) {
@@ -24,15 +24,15 @@ protected:
 
 TEST_F(BasicServerConfigTest, BasicConfigTest) {
   bool did_parse = CreateBasicServerConfig("port 2020;\npath /echo EchoHandler {}\npath / StaticHandler {\n\t root tests/test_file_dir/;\n\t}\n");
-  
+
   EXPECT_TRUE(did_parse);
   EXPECT_TRUE(basic_server_config_->Init());
-  EXPECT_EQ(2020, basic_server_config_->GetPortNumber());
+  EXPECT_EQ(2020, basic_server_config_->GetHTTPPortNumber());
 }
 
 TEST_F(BasicServerConfigTest, InvalidConfigTest) {
   bool did_parse = CreateBasicServerConfig("server 2020; }");
-  
+
   EXPECT_FALSE(did_parse);
   if(did_parse)
     EXPECT_FALSE(basic_server_config_->Init());

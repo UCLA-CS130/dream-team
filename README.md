@@ -13,6 +13,20 @@ The webserver executable can be invoked with
 where Nginx_Config_File is a configuration file as per the example in the
 specification provided here: https://github.com/UCLA-CS130/webserver-api
 
+HTTPS connections are now supported by the server. To set up an HTTPS port,
+you need to generate an OpenSSL public/private key pair. After this, you can
+add the following block to the config file:
+
+```
+ssl-port <Port_Number> {
+  private_key_path <Path_to_Private_Key>;
+  public_key_path <Path_to_Public_Key>;
+}
+```
+
+Please note that you may have to use ```sudo``` when invoking the server to get
+read permissions for the key pair.
+
 ## Source Code Organization
 
 The code is organized into the two directories specified below.

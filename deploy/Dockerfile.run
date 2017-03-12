@@ -4,4 +4,5 @@ WORKDIR /opt/httpserver
 COPY . /opt/httpserver
 
 EXPOSE 8080:8080
+EXPOSE 8081:8081
 CMD ["./bin/webserver", "config_file"]
