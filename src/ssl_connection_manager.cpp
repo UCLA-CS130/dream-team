@@ -16,7 +16,11 @@ SSLConnectionManager::SSLConnectionManager(BasicServerConfig* parsed_config, uns
 }
 
 void SSLConnectionManager::OnSocketReady(std::unique_ptr<boost::asio::ip::tcp::socket> socket) {
-  boost::asio::ssl::stream<boost::asio::ip::tcp::socket&> ssl_sock(*socket, context_);
-  ssl_sock.handshake(boost::asio::ssl::stream_base::server);
-  ConnectionManager::ProcessClient(ssl_sock);
+  try {
+    boost::asio::ssl::stream<boost::asio::ip::tcp::socket&> ssl_sock(*socket, context_);
+    ssl_sock.handshake(boost::asio::ssl::stream_base::server);
+    ConnectionManager::ProcessClient(ssl_sock);
+  } catch (std::exception& e) {
+    std::cerr << "Exception: " << e.what() << std::endl;
+  }
 }
