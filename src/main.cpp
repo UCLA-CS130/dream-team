@@ -57,26 +57,23 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  try {
-    if (parsed_config.IsHTTPPortDeclared() && parsed_config.IsSSLPortDeclared()) {
-      ConnectionManager HttpManager(&parsed_config, parsed_config.GetHTTPPortNumber());
-      SSLConnectionManager HttpsManager(&parsed_config, parsed_config.GetSSLPortNumber());
-      std::thread HttpThread(thread_worker, &HttpManager);
-      std::thread HttpsThread(thread_worker, &HttpsManager);
-      HttpThread.join();
-      HttpsThread.join();
-    } else if (parsed_config.IsHTTPPortDeclared()) {
-      ConnectionManager HttpManager(&parsed_config, parsed_config.GetHTTPPortNumber());
-      HttpManager.RunTcpServer();
-    } else if (parsed_config.IsSSLPortDeclared()) {
-      SSLConnectionManager HttpsManager(&parsed_config, parsed_config.GetSSLPortNumber());
-      HttpsManager.RunTcpServer();
-    } else {
-      std::cerr << "No ports specified" << std::endl;
-      return 1;
-    }
-  } catch (std::exception& e) {
-    std::cerr << "Exception: " << e.what() << std::endl;
+  if (parsed_config.IsHTTPPortDeclared() && parsed_config.IsSSLPortDeclared()) {
+    ConnectionManager HttpManager(&parsed_config, parsed_config.GetHTTPPortNumber());
+    SSLConnectionManager HttpsManager(&parsed_config, parsed_config.GetSSLPortNumber());
+
+    std::thread HttpThread(thread_worker, &HttpManager);
+    std::thread HttpsThread(thread_worker, &HttpsManager);
+
+    HttpThread.join();
+    HttpsThread.join();
+  } else if (parsed_config.IsHTTPPortDeclared()) {
+    ConnectionManager HttpManager(&parsed_config, parsed_config.GetHTTPPortNumber());
+    HttpManager.RunTcpServer();
+  } else if (parsed_config.IsSSLPortDeclared()) {
+    SSLConnectionManager HttpsManager(&parsed_config, parsed_config.GetSSLPortNumber());
+    HttpsManager.RunTcpServer();
+  } else {
+    std::cerr << "No ports specified" << std::endl;
     return 1;
   }
 

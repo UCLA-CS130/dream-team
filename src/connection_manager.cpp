@@ -20,9 +20,13 @@ void ConnectionManager::RunTcpServer() {
 					  boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_number_));
 
   while (true) {
-    auto socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(aios_));
-    acceptor.accept(*socket);
-    QueueClientThread(std::move(socket));
+    try {
+      auto socket = std::unique_ptr<boost::asio::ip::tcp::socket>(new boost::asio::ip::tcp::socket(aios_));
+      acceptor.accept(*socket);
+      QueueClientThread(std::move(socket));
+    } catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
   }
 }
 
